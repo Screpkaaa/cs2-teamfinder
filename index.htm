@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CS2 TeamFinder — Админ управление</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <title>CS2 TeamFinder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+            }
         }
-
+    </script>
+    <style>
+        /* ========== ПОЛНЫЙ CSS (дизайн, скины, анимации) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             background: #0a0c15;
@@ -18,13 +24,10 @@
             min-height: 100vh;
             transition: background 0.3s, color 0.2s;
         }
-
         body.light {
             background: #f0f2f5;
             color: #1a1a2e;
         }
-
-        /* Анимированные скины (без изменений) */
         .skin-bg {
             position: fixed;
             top: 0;
@@ -54,7 +57,6 @@
         .skin5 { top: 65%; left: -5%; animation-duration: 32s; animation-delay: 11s; }
         .skin6 { top: 80%; left: -5%; animation-duration: 38s; animation-delay: 5s; font-size: 3.5rem; }
         .skin7 { top: 92%; left: -5%; animation-duration: 27s; animation-delay: 14s; }
-
         .animated-bg {
             position: fixed;
             top: 0;
@@ -64,15 +66,12 @@
             background: radial-gradient(ellipse at 30% 40%, rgba(255,107,53,0.08), transparent 70%);
             z-index: -1;
         }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 1.5rem;
             position: relative;
         }
-
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -83,7 +82,6 @@
             padding-bottom: 1rem;
             border-bottom: 1px solid rgba(255,107,53,0.3);
         }
-
         .logo {
             display: flex;
             align-items: center;
@@ -113,7 +111,6 @@
         body.light .logo-text span {
             color: #1a1a2e;
         }
-
         .stats-panel {
             display: flex;
             gap: 0.8rem;
@@ -130,13 +127,6 @@
         }
         body.light .stat-card {
             background: rgba(0,0,0,0.05);
-        }
-
-        .action-buttons-header {
-            display: flex;
-            gap: 0.6rem;
-            align-items: center;
-            flex-wrap: wrap;
         }
         .header-btn {
             background: linear-gradient(135deg, #ff6b35, #f43f5e);
@@ -174,8 +164,6 @@
             background: rgba(255,107,53,0.2);
             border-color: #ff6b35;
         }
-
-        /* Tabs, формы, карточки и остальные стили (без изменений) */
         .tabs {
             display: flex;
             gap: 0.5rem;
@@ -207,7 +195,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .tab-content.active { display: block; }
-
         .two-columns {
             display: grid;
             grid-template-columns: 380px 1fr;
@@ -286,7 +273,6 @@
             flex-wrap: wrap;
         }
         .search-bar input, .search-bar select { margin-bottom: 0; flex: 1; }
-
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -342,7 +328,6 @@
         }
         .like-btn:hover { transform: scale(1.1); }
         .liked { color: #ff4444; }
-
         .stars {
             display: flex;
             gap: 0.2rem;
@@ -357,7 +342,6 @@
         .star:hover { transform: scale(1.1); }
         .star.active { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
         body.light .star { color: #ccc; }
-
         .badge {
             display: inline-block;
             padding: 0.2rem 0.7rem;
@@ -373,7 +357,6 @@
         .region-badge { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
         .time-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #1a1a2e; }
         .faceit-level { background: linear-gradient(135deg, #ffd700, #ffb347); color: #1a1a2e; }
-
         .desc-text {
             margin: 0.8rem 0;
             font-size: 0.85rem;
@@ -404,7 +387,6 @@
         .discord-link { background: #5865f2; color: white; }
         .twitch-link { background: #9146ff; color: white; }
         .telegram-link { background: #0088cc; color: white; }
-
         .steam-code {
             font-family: monospace;
             background: rgba(0,0,0,0.4);
@@ -423,7 +405,6 @@
             transition: all 0.2s;
         }
         .qr-code:hover { color: #ff6b35; }
-
         .action-buttons {
             display: flex;
             gap: 0.6rem;
@@ -445,7 +426,6 @@
         .btn-delete:hover { background: #ef4444; }
         .chat-btn { background: #3b82f6; border: none; color: white; }
         .chat-btn:hover { background: #2563eb; }
-
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -459,8 +439,6 @@
             text-align: right;
             margin-top: 0.6rem;
         }
-
-        /* Матчи */
         .matches-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -517,17 +495,6 @@
         }
         .add-match-form input { flex: 2; margin: 0; }
         .add-match-form button { flex: 1; margin: 0; }
-        .logout-admin-btn {
-            background: rgba(220,38,38,0.2);
-            border: 1px solid rgba(220,38,38,0.3);
-            padding: 0.2rem 0.7rem;
-            border-radius: 1rem;
-            cursor: pointer;
-            color: #ff6b6b;
-            font-size: 0.7rem;
-        }
-
-        /* Чат */
         .chat-modal {
             display: none;
             position: fixed;
@@ -565,7 +532,6 @@
         }
         .chat-input-area input { margin: 0; }
         body.light .chat-input-area { border-top: 1px solid #ccc; }
-
         .templates {
             display: flex;
             gap: 0.5rem;
@@ -589,8 +555,6 @@
             background: #ff6b35;
             color: white;
         }
-
-        /* Модалка доната */
         .donate-modal {
             display: none;
             position: fixed;
@@ -723,12 +687,10 @@
             background: rgba(255,107,53,0.2);
             border-color: #ff6b35;
         }
-
         @media (max-width: 800px) {
             .container { padding: 1rem; }
             .two-columns { grid-template-columns: 1fr; }
             .form-card { position: static; }
-            .action-buttons-header { margin-top: 0.5rem; }
         }
     </style>
 </head>
@@ -745,300 +707,207 @@
 <div class="animated-bg"></div>
 
 <div class="container">
-    <div class="header">
-        <div class="logo">
-            <div class="logo-icon">🎮</div>
-            <div class="logo-text">CS2 <span>TeamFinder</span></div>
-        </div>
-        <div class="stats-panel">
-            <div class="stat-card">👥 <span id="onlineCounter">0</span></div>
-            <div class="stat-card">🔥 <span id="topRoles">--</span></div>
-            <div class="action-buttons-header">
-                <div id="adminLoginBtnHeader" style="display: inline-block;">
-                    <button class="header-btn" onclick="adminLogin()">🔑 Войти как админ</button>
-                </div>
-                <div id="adminLoggedInPanelHeader" style="display: none;">
-                    <button class="header-btn outline" onclick="adminLogout()">🚪 Выйти из админки</button>
-                </div>
-                <button class="header-btn" onclick="openDonateModal()">🎁 Поддержать</button>
-                <button class="header-btn outline" onclick="writeToAdmin()">📨 Написать админу</button>
-                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-            </div>
+    <div id="authContainer" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+        <div class="form-card" style="max-width: 400px; width:100%;">
+            <h2 style="text-align:center; margin-bottom:1rem;">Вход / Регистрация</h2>
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Пароль">
+            <button class="btn-primary" id="registerBtn">Зарегистрироваться</button>
+            <hr style="margin:1rem 0">
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Пароль">
+            <button class="btn-primary" id="loginBtn">Войти</button>
         </div>
     </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('posts')">📢 Объявления</button>
-        <button class="tab-btn" onclick="switchTab('matches')">🎬 Матчи</button>
-        <button class="tab-btn" onclick="toggleChat()">💬 Чат</button>
-    </div>
-
-    <div id="postsTab" class="tab-content active">
-        <div class="two-columns">
-            <div class="form-card">
-                <div class="form-title">✨ Создать объявление</div>
-                <div class="templates">
-                    <button class="template-btn" onclick="applyTemplate('awp')">🎯 AWP</button>
-                    <button class="template-btn" onclick="applyTemplate('support')">🛡️ Support</button>
-                    <button class="template-btn" onclick="applyTemplate('igl')">👑 IGL</button>
-                    <button class="template-btn" onclick="applyTemplate('entry')">⚡ Entry</button>
-                </div>
-                <input type="text" id="nick" placeholder="Никнейм">
-                <input type="text" id="rank" placeholder="Ранг">
-                <input type="text" id="role" placeholder="Роль">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="hasMic"> <label>🎙️ Микрофон</label>
-                </div>
-                <select id="region">
-                    <option value="">Регион</option>
-                    <option>CIS</option><option>EU</option><option>NA</option><option>ASIA</option>
-                </select>
-                <select id="playTime">
-                    <option value="">Время игры</option>
-                    <option>Утро</option><option>День</option><option>Вечер</option><option>Ночь</option>
-                </select>
-                <select id="faceitLevel">
-                    <option value="0">FACEIT уровень</option>
-                    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-                    <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-                </select>
-                <input type="text" id="discord" placeholder="Discord">
-                <input type="text" id="twitch" placeholder="Twitch">
-                <input type="text" id="telegram" placeholder="Telegram">
-                <textarea id="desc" rows="2" placeholder="О себе..."></textarea>
-                <input type="text" id="steam" placeholder="Steam код">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="verifiedSteam"> <label>✅ Верифицирован</label>
-                </div>
-                <button class="btn-primary" onclick="addPost()">🚀 Опубликовать</button>
-            </div>
-
-            <div>
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="🔍 Поиск..." onkeyup="filterPosts()">
-                    <select id="filterRank" onchange="filterPosts()">
-                        <option value="">Все ранги</option>
-                        <option>Silver</option><option>Gold Nova</option><option>Master Guardian</option>
-                        <option>Legendary Eagle</option><option>Supreme</option><option>Global Elite</option>
-                    </select>
-                    <select id="filterRegion" onchange="filterPosts()">
-                        <option value="">Все регионы</option>
-                        <option>CIS</option><option>EU</option><option>NA</option><option>ASIA</option>
-                    </select>
-                </div>
-                <div id="cardsContainer" class="cards-grid"><div class="empty-state">✨ Загрузка...</div></div>
+    <div id="mainContent" style="display:none;">
+        <div class="header">
+            <div class="logo"><div class="logo-icon">🎮</div><div class="logo-text">CS2<span>TeamFinder</span></div></div>
+            <div class="stats-panel">
+                <div class="stat-card">👥 <span id="onlineCounter">0</span></div>
+                <div class="stat-card">🔥 <span id="topRoles">--</span></div>
+                <div id="userInfo"></div>
+                <button class="header-btn outline" id="writeToAdminBtn">📨 Написать админу</button>
+                <button class="header-btn" id="donateBtn">🎁 Поддержать</button>
+                <button class="theme-toggle" id="themeToggle">🌓</button>
             </div>
         </div>
-    </div>
-
-    <div id="matchesTab" class="tab-content">
-        <div id="adminPanel" class="admin-panel" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-                <span style="color:#ff6b35;">🔐 Админ-панель</span>
-                <button class="logout-admin-btn" onclick="adminLogout()">🚪 Выйти</button>
-            </div>
-            <div class="add-match-form">
-                <input type="text" id="matchTitle" placeholder="Название матча">
-                <input type="text" id="matchLink" placeholder="Ссылка">
-                <button class="btn-primary" onclick="addMatch()" style="width: auto;">➕ Добавить</button>
-            </div>
-            <div style="margin-top: 0.8rem;">
-                <button class="btn-primary" onclick="openTelegramGuide()" style="background: #0088cc;">📨 Настроить Telegram-уведомления</button>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="posts">📢 Объявления</button>
+            <button class="tab-btn" data-tab="matches">🎬 Матчи</button>
+            <button class="tab-btn" data-tab="chat">💬 Чат</button>
+        </div>
+        <div id="postsTab" class="tab-content active">
+            <div class="two-columns">
+                <div class="form-card">
+                    <div class="form-title">✨ Создать объявление</div>
+                    <div class="templates">
+                        <button class="template-btn" data-template="awp">🎯 AWP</button>
+                        <button class="template-btn" data-template="support">🛡️ Support</button>
+                        <button class="template-btn" data-template="igl">👑 IGL</button>
+                        <button class="template-btn" data-template="entry">⚡ Entry</button>
+                    </div>
+                    <input type="text" id="nick" placeholder="Никнейм">
+                    <input type="text" id="rank" placeholder="Ранг">
+                    <input type="text" id="role" placeholder="Роль">
+                    <div class="checkbox-group"><input type="checkbox" id="hasMic"> <label>🎙️ Микрофон</label></div>
+                    <select id="region"><option value="">Регион</option><option>CIS</option><option>EU</option><option>NA</option><option>ASIA</option></select>
+                    <select id="playTime"><option value="">Время игры</option><option>Утро</option><option>День</option><option>Вечер</option><option>Ночь</option></select>
+                    <select id="faceitLevel"><option value="0">FACEIT уровень</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+                    <input type="text" id="discord" placeholder="Discord">
+                    <input type="text" id="twitch" placeholder="Twitch">
+                    <input type="text" id="telegram" placeholder="Telegram">
+                    <textarea id="desc" rows="2" placeholder="О себе..."></textarea>
+                    <input type="text" id="steam" placeholder="Steam код">
+                    <div class="checkbox-group"><input type="checkbox" id="verifiedSteam"> <label>✅ Верифицирован</label></div>
+                    <button class="btn-primary" id="createPostBtn">🚀 Опубликовать</button>
+                </div>
+                <div>
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="🔍 Поиск по нику...">
+                        <select id="filterRank"><option value="">Все ранги</option><option>Silver</option><option>Gold Nova</option><option>Master Guardian</option><option>Legendary Eagle</option><option>Supreme</option><option>Global Elite</option></select>
+                        <select id="filterRegion"><option value="">Все регионы</option><option>CIS</option><option>EU</option><option>NA</option><option>ASIA</option></select>
+                    </div>
+                    <div id="cardsContainer" class="cards-grid"><div class="empty-state">✨ Загрузка...</div></div>
+                </div>
             </div>
         </div>
-        <div id="matchesContainer" class="matches-grid"></div>
+        <div id="matchesTab" class="tab-content">
+            <div id="adminPanel" class="admin-panel" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
+                    <span style="color:#ff6b35;">🔐 Админ-панель</span>
+                </div>
+                <div class="add-match-form">
+                    <input type="text" id="matchTitle" placeholder="Название матча">
+                    <input type="text" id="matchLink" placeholder="Ссылка">
+                    <button class="btn-primary" id="addMatchBtn">➕ Добавить</button>
+                </div>
+            </div>
+            <div id="matchesContainer" class="matches-grid"></div>
+        </div>
+    </div>
+</div>
+
+<div id="chatModal" class="chat-modal">
+    <div class="chat-header" id="closeChatBtn"><span>💬 Чат</span><span>✖</span></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Сообщение...">
+        <button id="sendMessageBtn">➤</button>
     </div>
 </div>
 
 <div id="donateModal" class="donate-modal">
     <div class="donate-modal-content">
         <h3>🎁 Поддержать проект</h3>
-        <p style="font-size:0.8rem; margin-bottom:1rem; color:#888;">Ваша поддержка помогает развитию</p>
+        <p style="font-size:0.8rem; margin-bottom:1rem;">Ваша поддержка помогает развитию</p>
         <div class="donate-amounts">
-            <div class="donate-amount" onclick="donate(100)">100 ₽</div>
-            <div class="donate-amount" onclick="donate(300)">300 ₽</div>
-            <div class="donate-amount" onclick="donate(500)">500 ₽</div>
-            <div class="donate-amount" onclick="donate(1000)">1000 ₽</div>
+            <button class="donate-amount" data-amount="100">100 ₽</button>
+            <button class="donate-amount" data-amount="300">300 ₽</button>
+            <button class="donate-amount" data-amount="500">500 ₽</button>
+            <button class="donate-amount" data-amount="1000">1000 ₽</button>
         </div>
         <div class="donate-custom">
             <input type="number" id="customAmount" placeholder="Своя сумма">
-            <button onclick="donateCustom()">Дать</button>
+            <button id="customDonateBtn">Дать</button>
         </div>
-        <button class="donate-button" onclick="donateWithDonationAlerts()">💳 Перейти к оплате</button>
-        <button class="close-modal" onclick="closeDonateModal()">Закрыть</button>
+        <button class="donate-button" id="donateWithAlertBtn">💳 Перейти к оплате</button>
+        <button class="close-modal" id="closeDonateModalBtn">Закрыть</button>
     </div>
 </div>
 
-<div id="chatModal" class="chat-modal">
-    <div class="chat-header" onclick="toggleChat()"><span>💬 Чат</span><span>✖</span></div>
-    <div class="chat-messages" id="chatMessages"><div>💬 Добро пожаловать!</div></div>
-    <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Сообщение...">
-        <button onclick="sendMessage()">➤</button>
-    </div>
-</div>
+<script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, arrayUnion, getDoc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 
-<script>
-    // ========== ДАННЫЕ ==========
-    let posts = JSON.parse(localStorage.getItem('cs2_posts') || '[]');
-    let chatMessages = JSON.parse(localStorage.getItem('cs2_chat') || '["💬 Добро пожаловать!"]');
-    let matches = JSON.parse(localStorage.getItem('cs2_matches') || '[]');
-    let isAdmin = localStorage.getItem('isAdmin') === 'true';
-    let deviceId = localStorage.getItem('deviceId');
-    if(!deviceId) {
-        deviceId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('deviceId', deviceId);
+    // ========== ТВОЙ КОНФИГ FIREBASE (вставлен) ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyB0NNx_xuSTWwvtC7ArR7cpLjagV3E8kxc",
+        authDomain: "cs2-teamfinder.firebaseapp.com",
+        projectId: "cs2-teamfinder",
+        storageBucket: "cs2-teamfinder.firebasestorage.app",
+        messagingSenderId: "339871719223",
+        appId: "1:339871719223:web:74a5b9b2974aa021b5c4b2"
+        // measurementId не нужен, убрали
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let isAdmin = false;
+    let postsUnsubscribe = null;
+    let chatUnsubscribe = null;
+    let matchesUnsubscribe = null;
+
+    // Константы (замени ссылки на свои)
+    const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/screpochkaa';
+    const TELEGRAM_ADMIN_LINK = 'https://t.me/TeamFinderCS2';
+
+    // DOM элементы
+    const authContainer = document.getElementById('authContainer');
+    const mainContent = document.getElementById('mainContent');
+    const userInfo = document.getElementById('userInfo');
+    const adminPanel = document.getElementById('adminPanel');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const matchesContainer = document.getElementById('matchesContainer');
+    const chatMessagesDiv = document.getElementById('chatMessages');
+    const onlineCounter = document.getElementById('onlineCounter');
+    const topRolesSpan = document.getElementById('topRoles');
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
     }
 
-    const ADMIN_PASSWORD = 'admin123';
-    const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/screpochkaa'; // ЗАМЕНИТЕ
-    const TELEGRAM_ADMIN_LINK = 'https://t.me/+vIWetVa_XDw3MjIy'; // ЗАМЕНИТЕ (ссылка для связи)
-
-    // ========== МИГРАЦИЯ СТАРЫХ ПОСТОВ ==========
-    posts = posts.map(post => {
-        if (!post.authorDeviceId) post.authorDeviceId = null;
-        return post;
-    });
-    localStorage.setItem('cs2_posts', JSON.stringify(posts));
-
-    // ========== ФУНКЦИИ ДЛЯ ОБЪЯВЛЕНИЙ ==========
-    function saveAndRender() {
-        localStorage.setItem('cs2_posts', JSON.stringify(posts));
-        renderCards();
-        updateStats();
+    function updateStats(posts) {
+        onlineCounter.innerText = posts.length;
+        const roles = {};
+        posts.forEach(p => { roles[p.role] = (roles[p.role] || 0) + 1; });
+        const top = Object.entries(roles).sort((a, b) => b[1] - a[1]).slice(0, 2);
+        topRolesSpan.innerText = top.map(r => `${r[0]}(${r[1]})`).join(' ') || 'нет';
     }
 
-    function addPost() {
-        let nick = document.getElementById('nick').value.trim();
-        let rank = document.getElementById('rank').value.trim();
-        let role = document.getElementById('role').value.trim();
-        let hasMic = document.getElementById('hasMic').checked;
-        let region = document.getElementById('region').value;
-        let playTime = document.getElementById('playTime').value;
-        let faceit = document.getElementById('faceitLevel').value;
-        let discord = document.getElementById('discord').value.trim();
-        let twitch = document.getElementById('twitch').value.trim();
-        let telegram = document.getElementById('telegram').value.trim();
-        let desc = document.getElementById('desc').value.trim();
-        let steam = document.getElementById('steam').value.trim();
-        let verified = document.getElementById('verifiedSteam').checked;
-
-        if(!nick || !rank || !role || !desc || !steam) {
-            alert('Заполните все поля');
-            return;
-        }
-
-        posts.unshift({
-            id: Date.now(),
-            nick, rank, role, hasMic, region, playTime, faceit,
-            discord, twitch, telegram, desc, steam, verified,
-            likes: 0,
-            likedBy: [],
-            ratingCount: 0,
-            ratingSum: 0,
-            avgRating: 0,
-            ratedBy: [],
-            authorDeviceId: deviceId,
-            date: new Date().toLocaleString()
-        });
-        saveAndRender();
-
-        // Очистка формы
-        document.getElementById('nick').value = '';
-        document.getElementById('rank').value = '';
-        document.getElementById('role').value = '';
-        document.getElementById('hasMic').checked = false;
-        document.getElementById('region').value = '';
-        document.getElementById('playTime').value = '';
-        document.getElementById('faceitLevel').value = '0';
-        document.getElementById('discord').value = '';
-        document.getElementById('twitch').value = '';
-        document.getElementById('telegram').value = '';
-        document.getElementById('desc').value = '';
-        document.getElementById('steam').value = '';
-        document.getElementById('verifiedSteam').checked = false;
-    }
-
-    // Админ может удалить любой пост
-    function deletePost(id) {
-        if(!isAdmin) {
-            alert('❌ Только администратор может удалять объявления!');
-            return;
-        }
-        if(confirm('Удалить объявление?')) {
-            posts = posts.filter(p => p.id !== id);
-            saveAndRender();
-        }
-    }
-
-    function likePost(id) {
-        let post = posts.find(p => p.id == id);
-        if(!post) return;
-        if(!post.likedBy) post.likedBy = [];
-        if(post.likedBy.includes(deviceId)) {
-            alert('❤️ Вы уже лайкнули');
-            return;
-        }
-        post.likedBy.push(deviceId);
-        post.likes = (post.likes || 0) + 1;
-        saveAndRender();
-    }
-
-    function ratePost(id, rating) {
-        let post = posts.find(p => p.id == id);
-        if(post) {
-            if(!post.ratedBy) post.ratedBy = [];
-            if(post.ratedBy.includes(deviceId)) {
-                alert('⭐ Вы уже оценили');
-                return;
-            }
-            post.ratedBy.push(deviceId);
-            post.ratingCount = (post.ratingCount || 0) + 1;
-            post.ratingSum = (post.ratingSum || 0) + rating;
-            post.avgRating = post.ratingSum / post.ratingCount;
-            saveAndRender();
-        }
-    }
-
-    function getStarsHtml(id, avgRating) {
+    function getStarsHtml(postId, avgRating) {
         let html = '<div class="stars">';
-        for(let i=1;i<=5;i++) html += `<span class="star ${avgRating>=i?'active':''}" onclick="ratePost(${id},${i})">★</span>`;
-        html += `<span style="margin-left:0.3rem; font-size:0.7rem;">(${avgRating?avgRating.toFixed(1):'0'})</span></div>`;
+        for (let i = 1; i <= 5; i++) {
+            html += `<span class="star ${avgRating >= i ? 'active' : ''}" data-post-id="${postId}" data-rating="${i}">★</span>`;
+        }
+        html += `<span class="rating-text">(${avgRating.toFixed(1)})</span></div>`;
         return html;
     }
 
-    function applyTemplate(type) {
-        let t = { awp: { role: 'AWP', desc: 'Играю на AWP, есть микрофон.' }, support: { role: 'Support', desc: 'Поддержка, знаю смоки.' }, igl: { role: 'IGL', desc: 'Капитан, тактика.' }, entry: { role: 'Entry', desc: 'Захожу первым.' } }[type];
-        if(t) { document.getElementById('role').value = t.role; document.getElementById('desc').value = t.desc; }
+    async function loadPostsRealtime() {
+        if (postsUnsubscribe) postsUnsubscribe();
+        const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+        postsUnsubscribe = onSnapshot(q, (snapshot) => {
+            const posts = [];
+            snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+            renderPosts(posts);
+            updateStats(posts);
+        });
     }
 
-    function showQR(steamId) { alert(`🎮 Код: ${steamId}\nsteam://friends/add/${steamId}`); }
-    function addToSteam(steamId) { window.open('steam://friends/add/'+steamId, '_blank'); alert('Код: '+steamId); }
-
-    function filterPosts() {
-        let search = document.getElementById('searchInput').value.toLowerCase();
-        let rankFilter = document.getElementById('filterRank').value;
-        let regionFilter = document.getElementById('filterRegion').value;
-        let filtered = posts.filter(p => p.nick.toLowerCase().includes(search) && (rankFilter === '' || p.rank === rankFilter) && (regionFilter === '' || p.region === regionFilter));
-        renderCards(filtered);
-    }
-
-    function renderCards(filteredList = null) {
-        let container = document.getElementById('cardsContainer');
-        let list = filteredList !== null ? filteredList : posts;
-        if(list.length === 0) {
-            container.innerHTML = '<div class="empty-state">😢 Нет объявлений</div>';
+    function renderPosts(posts) {
+        if (!posts.length) {
+            cardsContainer.innerHTML = '<div class="empty-state">😢 Нет объявлений</div>';
             return;
         }
         let html = '';
-        for(let p of list) {
-            let hasLiked = p.likedBy && p.likedBy.includes(deviceId);
+        for (let p of posts) {
+            const hasLiked = p.likedBy && p.likedBy.includes(currentUser?.uid);
+            const avg = p.avgRating || 0;
             html += `<div class="player-card">
                         <div class="card-header">
                             <div class="player-name">🎮 ${escapeHtml(p.nick)}${p.verified ? ' ✅' : ''}</div>
-                            <div class="likes"><button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="likePost(${p.id})">❤️</button><span>${p.likes || 0}</span></div>
+                            <div class="likes">
+                                <button class="like-btn" data-id="${p.id}" data-likes="${p.likes || 0}" data-likedby='${JSON.stringify(p.likedBy || [])}'>❤️</button>
+                                <span>${p.likes || 0}</span>
+                            </div>
                         </div>
-                        ${getStarsHtml(p.id, p.avgRating || 0)}
+                        ${getStarsHtml(p.id, avg)}
                         <div>
                             <span class="badge rank-badge">🏆 ${escapeHtml(p.rank)}</span>
                             <span class="badge role-badge">⚔️ ${escapeHtml(p.role)}</span>
@@ -1054,222 +923,357 @@
                             ${p.telegram ? `<a href="https://t.me/${p.telegram}" target="_blank" class="social-link telegram-link">Telegram</a>` : ''}
                         </div>
                         <div class="steam-code">Steam: ${escapeHtml(p.steam)}</div>
-                        <div class="qr-code" onclick="showQR('${p.steam}')">📱 QR-код</div>
+                        <div class="qr-code" data-steam="${p.steam}">📱 QR-код</div>
                         <div class="action-buttons">
-                            <button class="btn-steam" onclick="addToSteam('${p.steam}')">➕ Добавить в Steam</button>
-                            <button class="chat-btn" onclick="openChatWithUser('${p.nick}')">💬 Написать</button>
-                            ${isAdmin ? `<button class="btn-delete" onclick="deletePost(${p.id})">🗑 Удалить (админ)</button>` : ''}
+                            <button class="btn-steam" data-steam="${p.steam}">➕ Добавить в Steam</button>
+                            <button class="chat-btn" data-nick="${p.nick}">💬 Написать</button>
+                            ${isAdmin ? `<button class="btn-delete delete-post" data-id="${p.id}">🗑 Удалить (админ)</button>` : ''}
                         </div>
-                        <div class="date-small">📅 ${p.date}</div>
+                        <div class="date-small">📅 ${p.createdAt?.toDate ? p.createdAt.toDate().toLocaleString() : new Date(p.createdAt?.seconds * 1000).toLocaleString()}</div>
                     </div>`;
         }
-        container.innerHTML = html;
+        cardsContainer.innerHTML = html;
+        attachPostEventListeners();
     }
 
-    // ========== МАТЧИ (ВИДНЫ ВСЕМ, УПРАВЛЯЕТ АДМИН) ==========
-    function addMatch() {
-        if(!isAdmin) { alert('⛔ Только админ'); return; }
-        let title = document.getElementById('matchTitle').value.trim();
-        let link = document.getElementById('matchLink').value.trim();
-        if(!title || !link) { alert('Заполните поля'); return; }
-        matches.unshift({ id: Date.now(), title, link, date: new Date().toLocaleString() });
-        localStorage.setItem('cs2_matches', JSON.stringify(matches));
-        renderMatches();
-        document.getElementById('matchTitle').value = '';
-        document.getElementById('matchLink').value = '';
-    }
-
-    function deleteMatch(id) {
-        if(!isAdmin) { alert('⛔ Только админ'); return; }
-        if(confirm('Удалить матч?')) {
-            matches = matches.filter(m => m.id !== id);
-            localStorage.setItem('cs2_matches', JSON.stringify(matches));
-            renderMatches();
+    function attachPostEventListeners() {
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.removeEventListener('click', likeHandler);
+            btn.addEventListener('click', likeHandler);
+        });
+        document.querySelectorAll('.star').forEach(star => {
+            star.removeEventListener('click', starHandler);
+            star.addEventListener('click', starHandler);
+        });
+        document.querySelectorAll('.qr-code').forEach(qr => {
+            qr.removeEventListener('click', qrHandler);
+            qr.addEventListener('click', qrHandler);
+        });
+        document.querySelectorAll('.btn-steam').forEach(btn => {
+            btn.removeEventListener('click', steamHandler);
+            btn.addEventListener('click', steamHandler);
+        });
+        document.querySelectorAll('.chat-btn').forEach(btn => {
+            btn.removeEventListener('click', chatHandler);
+            btn.addEventListener('click', chatHandler);
+        });
+        if (isAdmin) {
+            document.querySelectorAll('.delete-post').forEach(btn => {
+                btn.removeEventListener('click', deletePostHandler);
+                btn.addEventListener('click', deletePostHandler);
+            });
         }
     }
 
-    function renderMatches() {
-        let container = document.getElementById('matchesContainer');
-        let adminPanel = document.getElementById('adminPanel');
-        if(isAdmin) {
-            if(adminPanel) adminPanel.style.display = 'block';
-        } else {
-            if(adminPanel) adminPanel.style.display = 'none';
+    async function likeHandler(e) {
+        const btn = e.currentTarget;
+        const postId = btn.dataset.id;
+        const currentLikes = parseInt(btn.dataset.likes);
+        const likedBy = JSON.parse(btn.dataset.likedby || '[]');
+        if (!currentUser) return alert('Войдите');
+        if (likedBy.includes(currentUser.uid)) return alert('Вы уже лайкнули');
+        const postRef = doc(db, 'posts', postId);
+        await updateDoc(postRef, { likes: currentLikes + 1, likedBy: arrayUnion(currentUser.uid) });
+    }
+
+    async function starHandler(e) {
+        const star = e.currentTarget;
+        const postId = star.dataset.postId;
+        const rating = parseInt(star.dataset.rating);
+        if (!currentUser) return alert('Войдите');
+        const postRef = doc(db, 'posts', postId);
+        const postSnap = await getDoc(postRef);
+        const postData = postSnap.data();
+        if (postData.ratedBy && postData.ratedBy.includes(currentUser.uid)) return alert('Вы уже оценили');
+        const newCount = (postData.ratingCount || 0) + 1;
+        const newSum = (postData.ratingSum || 0) + rating;
+        const newAvg = newSum / newCount;
+        await updateDoc(postRef, { ratingCount: newCount, ratingSum: newSum, avgRating: newAvg, ratedBy: arrayUnion(currentUser.uid) });
+    }
+
+    function qrHandler(e) {
+        const steam = e.currentTarget.dataset.steam;
+        alert(`🎮 Код: ${steam}\nsteam://friends/add/${steam}`);
+    }
+    function steamHandler(e) {
+        const steam = e.currentTarget.dataset.steam;
+        window.open(`steam://friends/add/${steam}`, '_blank');
+        alert('Код: ' + steam);
+    }
+    function chatHandler(e) {
+        const nick = e.currentTarget.dataset.nick;
+        openChatWithUser(nick);
+    }
+    async function deletePostHandler(e) {
+        const postId = e.currentTarget.dataset.id;
+        if (!isAdmin) return alert('Нет прав');
+        if (confirm('Удалить объявление?')) await deleteDoc(doc(db, 'posts', postId));
+    }
+
+    document.getElementById('createPostBtn')?.addEventListener('click', async () => {
+        if (!currentUser) return alert('Вы не авторизованы');
+        const nick = document.getElementById('nick').value.trim();
+        const rank = document.getElementById('rank').value.trim();
+        const role = document.getElementById('role').value.trim();
+        const hasMic = document.getElementById('hasMic').checked;
+        const region = document.getElementById('region').value;
+        const playTime = document.getElementById('playTime').value;
+        const faceit = document.getElementById('faceitLevel').value;
+        const discord = document.getElementById('discord').value.trim();
+        const twitch = document.getElementById('twitch').value.trim();
+        const telegram = document.getElementById('telegram').value.trim();
+        const desc = document.getElementById('desc').value.trim();
+        const steam = document.getElementById('steam').value.trim();
+        const verified = document.getElementById('verifiedSteam').checked;
+        if (!nick || !rank || !role || !desc || !steam) return alert('Заполните обязательные поля');
+        await addDoc(collection(db, 'posts'), {
+            nick, rank, role, hasMic, region, playTime, faceit, discord, twitch, telegram, desc, steam, verified,
+            authorId: currentUser.uid, authorEmail: currentUser.email,
+            likes: 0, likedBy: [], ratingCount: 0, ratingSum: 0, avgRating: 0, ratedBy: [],
+            createdAt: serverTimestamp()
+        });
+        document.getElementById('nick').value = '';
+        document.getElementById('rank').value = '';
+        document.getElementById('role').value = '';
+        document.getElementById('hasMic').checked = false;
+        document.getElementById('region').value = '';
+        document.getElementById('playTime').value = '';
+        document.getElementById('faceitLevel').value = '0';
+        document.getElementById('discord').value = '';
+        document.getElementById('twitch').value = '';
+        document.getElementById('telegram').value = '';
+        document.getElementById('desc').value = '';
+        document.getElementById('steam').value = '';
+        document.getElementById('verifiedSteam').checked = false;
+    });
+
+    async function loadChatRealtime() {
+        if (chatUnsubscribe) chatUnsubscribe();
+        const q = query(collection(db, 'messages'), orderBy('createdAt', 'asc'));
+        chatUnsubscribe = onSnapshot(q, (snapshot) => {
+            const messages = [];
+            snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+            renderChatMessages(messages);
+        });
+    }
+
+    function renderChatMessages(messages) {
+        let html = '';
+        for (let msg of messages) {
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                        <span><b>${escapeHtml(msg.authorEmail)}</b>: ${escapeHtml(msg.text)}</span>
+                        ${isAdmin ? `<button class="delete-msg" data-id="${msg.id}" style="background:none; border:none; color:#ff6b6b; cursor:pointer;">🗑</button>` : ''}
+                    </div>`;
         }
-        if(matches.length === 0) {
-            container.innerHTML = '<div class="empty-state">🎬 Нет матчей</div>';
+        chatMessagesDiv.innerHTML = html;
+        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        if (isAdmin) {
+            document.querySelectorAll('.delete-msg').forEach(btn => {
+                btn.removeEventListener('click', deleteMsgHandler);
+                btn.addEventListener('click', deleteMsgHandler);
+            });
+        }
+    }
+
+    async function deleteMsgHandler(e) {
+        const msgId = e.currentTarget.dataset.id;
+        if (!isAdmin) return;
+        if (confirm('Удалить сообщение?')) await deleteDoc(doc(db, 'messages', msgId));
+    }
+
+    document.getElementById('sendMessageBtn')?.addEventListener('click', async () => {
+        if (!currentUser) return alert('Войдите');
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        await addDoc(collection(db, 'messages'), { text, authorId: currentUser.uid, authorEmail: currentUser.email, createdAt: serverTimestamp() });
+        input.value = '';
+    });
+
+    function openChatWithUser(nick) {
+        const modal = document.getElementById('chatModal');
+        modal.style.display = 'flex';
+        document.getElementById('chatInput').value = `@${nick} `;
+        document.getElementById('chatInput').focus();
+    }
+
+    async function loadMatchesRealtime() {
+        if (matchesUnsubscribe) matchesUnsubscribe();
+        const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'));
+        matchesUnsubscribe = onSnapshot(q, (snapshot) => {
+            const matches = [];
+            snapshot.forEach(doc => matches.push({ id: doc.id, ...doc.data() }));
+            renderMatches(matches);
+        });
+    }
+
+    function renderMatches(matches) {
+        if (!matches.length) {
+            matchesContainer.innerHTML = '<div class="empty-state">🎬 Нет матчей</div>';
             return;
         }
         let html = '';
-        for(let m of matches) {
+        for (let m of matches) {
             let platform = '';
-            if(m.link.includes('twitch.tv')) platform = '📺 Twitch';
-            else if(m.link.includes('youtube.com') || m.link.includes('youtu.be')) platform = '🎥 YouTube';
-            else if(m.link.includes('faceit.com')) platform = '🎮 FACEIT';
+            if (m.link.includes('twitch.tv')) platform = '📺 Twitch';
+            else if (m.link.includes('youtube.com')) platform = '🎥 YouTube';
+            else if (m.link.includes('faceit.com')) platform = '🎮 FACEIT';
             html += `<div class="match-card">
                         <div class="match-title">🎬 ${escapeHtml(m.title)}</div>
                         <div style="font-size:0.65rem; color:#66c0f4;">${platform}</div>
                         <a href="${m.link}" target="_blank" class="match-link">▶ Смотреть</a>
-                        ${isAdmin ? `<button class="btn-delete" onclick="deleteMatch(${m.id})" style="margin-left:0.5rem;">🗑 Удалить</button>` : ''}
-                        <div class="date-small">📅 ${m.date}</div>
+                        ${isAdmin ? `<button class="delete-match" data-id="${m.id}" style="margin-left:0.5rem; background:#dc2626; border:none; padding:0.2rem 0.5rem; border-radius:1rem; color:white; cursor:pointer;">🗑 Удалить</button>` : ''}
+                        <div class="date-small">📅 ${m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString() : new Date(m.createdAt?.seconds * 1000).toLocaleString()}</div>
                     </div>`;
         }
-        container.innerHTML = html;
-    }
-
-    // ========== ЧАТ С УДАЛЕНИЕМ ДЛЯ АДМИНА ==========
-    function renderChat() {
-        let container = document.getElementById('chatMessages');
-        let html = '';
-        for(let i=0; i<chatMessages.length; i++) {
-            let msg = chatMessages[i];
-            html += `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                        <span>${msg}</span>
-                        ${isAdmin ? `<button onclick="deleteChatMessage(${i})" style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.7rem;">🗑</button>` : ''}
-                    </div>`;
-        }
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function deleteChatMessage(index) {
-        if(!isAdmin) return;
-        if(confirm('Удалить сообщение?')) {
-            chatMessages.splice(index, 1);
-            localStorage.setItem('cs2_chat', JSON.stringify(chatMessages));
-            renderChat();
+        matchesContainer.innerHTML = html;
+        if (isAdmin) {
+            document.querySelectorAll('.delete-match').forEach(btn => {
+                btn.removeEventListener('click', deleteMatchHandler);
+                btn.addEventListener('click', deleteMatchHandler);
+            });
         }
     }
 
-    function sendMessage() {
-        let input = document.getElementById('chatInput');
-        let msg = input.value.trim();
-        if(msg) {
-            chatMessages.push(`🧑 ${escapeHtml(msg)}`);
-            localStorage.setItem('cs2_chat', JSON.stringify(chatMessages));
-            renderChat();
-            input.value = '';
-        }
+    async function deleteMatchHandler(e) {
+        const matchId = e.currentTarget.dataset.id;
+        if (!isAdmin) return;
+        if (confirm('Удалить матч?')) await deleteDoc(doc(db, 'matches', matchId));
     }
 
-    // ========== АДМИН ==========
-    function adminLogin() {
-        let pwd = prompt('Пароль:');
-        if(pwd === ADMIN_PASSWORD) {
-            localStorage.setItem('isAdmin', 'true');
-            isAdmin = true;
-            alert('✅ Вы вошли как админ');
-            document.getElementById('adminLoginBtnHeader').style.display = 'none';
-            document.getElementById('adminLoggedInPanelHeader').style.display = 'inline-block';
-            renderCards();
-            renderMatches();
-            renderChat();
-            switchTab('matches');
+    document.getElementById('addMatchBtn')?.addEventListener('click', async () => {
+        if (!isAdmin) return alert('Только админ');
+        const title = document.getElementById('matchTitle').value.trim();
+        const link = document.getElementById('matchLink').value.trim();
+        if (!title || !link) return alert('Заполните поля');
+        await addDoc(collection(db, 'matches'), { title, link, createdAt: serverTimestamp() });
+        document.getElementById('matchTitle').value = '';
+        document.getElementById('matchLink').value = '';
+    });
+
+    // Аутентификация
+    document.getElementById('registerBtn')?.addEventListener('click', async () => {
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        if (!email || !password) return alert('Заполните поля');
+        try {
+            const userCred = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, 'users', userCred.user.uid), { email, isAdmin: false, createdAt: serverTimestamp() });
+            alert('Регистрация успешна!');
+        } catch (err) { alert(err.message); }
+    });
+    document.getElementById('loginBtn')?.addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) return alert('Заполните поля');
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert('Вход выполнен');
+        } catch (err) { alert(err.message); }
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        if (user) {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            isAdmin = userDoc.exists() && userDoc.data().isAdmin === true;
+            authContainer.style.display = 'none';
+            mainContent.style.display = 'block';
+            userInfo.innerHTML = `<span style="margin-right:0.8rem;">👋 ${user.email}</span>
+                                  <button class="header-btn outline" id="logoutBtn">Выйти</button>`;
+            document.getElementById('logoutBtn')?.addEventListener('click', () => signOut(auth));
+            adminPanel.style.display = isAdmin ? 'block' : 'none';
+            loadPostsRealtime();
+            loadChatRealtime();
+            loadMatchesRealtime();
         } else {
-            alert('❌ Неверный пароль');
+            authContainer.style.display = 'flex';
+            mainContent.style.display = 'none';
+            if (postsUnsubscribe) postsUnsubscribe();
+            if (chatUnsubscribe) chatUnsubscribe();
+            if (matchesUnsubscribe) matchesUnsubscribe();
+            isAdmin = false;
         }
-    }
+    });
 
-    function adminLogout() {
-        localStorage.setItem('isAdmin', 'false');
-        isAdmin = false;
-        alert('🚪 Вы вышли из админки');
-        document.getElementById('adminLoginBtnHeader').style.display = 'inline-block';
-        document.getElementById('adminLoggedInPanelHeader').style.display = 'none';
-        renderCards();
-        renderMatches();
-        renderChat();
-        switchTab('posts');
-    }
+    // Донат
+    window.openDonateModal = () => document.getElementById('donateModal').style.display = 'flex';
+    window.closeDonateModal = () => document.getElementById('donateModal').style.display = 'none';
+    window.donateWithAlert = (amount) => { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); window.closeDonateModal(); };
+    document.querySelectorAll('.donate-amount').forEach(btn => btn.addEventListener('click', () => window.donateWithAlert(btn.dataset.amount)));
+    document.getElementById('customDonateBtn')?.addEventListener('click', () => {
+        const amount = document.getElementById('customAmount').value;
+        if (amount && amount > 0) window.donateWithAlert(amount);
+        else alert('Введите сумму');
+    });
+    document.getElementById('donateWithAlertBtn')?.addEventListener('click', () => { window.open(DONATION_ALERTS_URL, '_blank'); window.closeDonateModal(); });
+    document.getElementById('closeDonateModalBtn')?.addEventListener('click', () => window.closeDonateModal());
+    document.getElementById('donateBtn')?.addEventListener('click', () => window.openDonateModal());
 
-    // ========== ДОНАТ ==========
-    function openDonateModal() { document.getElementById('donateModal').style.display = 'flex'; }
-    function closeDonateModal() { document.getElementById('donateModal').style.display = 'none'; }
-    function donate(amount) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); }
-    function donateCustom() { let amount = document.getElementById('customAmount').value; if(amount && amount>0) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); } else alert('Введите сумму'); }
-    function donateWithDonationAlerts() { window.open(DONATION_ALERTS_URL, '_blank'); closeDonateModal(); }
+    // Связь с админом
+    document.getElementById('writeToAdminBtn')?.addEventListener('click', () => window.open(TELEGRAM_ADMIN_LINK, '_blank'));
 
-    // ========== СВЯЗЬ С АДМИНОМ (доступно всем) ==========
-    function writeToAdmin() {
-        window.open(TELEGRAM_ADMIN_LINK, '_blank');
-    }
+    // Тема
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle?.addEventListener('click', () => {
+        document.body.classList.toggle('light');
+        localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+    if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
 
-    function openTelegramGuide() {
-        alert('📨 Чтобы получать уведомления о новых постах и сообщениях в Telegram:\n\n1. Создайте бота через @BotFather\n2. Получите свой Chat ID через @userinfobot\n3. Используйте сервис Make.com или IFTTT для отправки вебхуков\n\nИли просто напишите администратору в Telegram: ' + TELEGRAM_ADMIN_LINK);
-        window.open(TELEGRAM_ADMIN_LINK, '_blank');
-    }
-
-    // ========== ОБЩИЕ ФУНКЦИИ ==========
-    function updateStats() {
-        document.getElementById('onlineCounter').innerHTML = posts.length;
-        let roles = {};
-        posts.forEach(p => { roles[p.role] = (roles[p.role] || 0) + 1; });
-        let top = Object.entries(roles).sort((a,b) => b[1] - a[1]).slice(0,2);
-        document.getElementById('topRoles').innerHTML = top.map(r => `${r[0]}(${r[1]})`).join(' ') || 'нет';
-    }
-
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        if(tab === 'posts') {
-            document.querySelector('.tab-btn:first-child').classList.add('active');
-            document.getElementById('postsTab').classList.add('active');
-        } else if(tab === 'matches') {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('matchesTab').classList.add('active');
-            renderMatches();
-        }
-    }
-
-    function toggleChat() { let modal = document.getElementById('chatModal'); modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; renderChat(); }
-    function openChatWithUser(nick) { toggleChat(); document.getElementById('chatInput').value = `@${nick} `; document.getElementById('chatInput').focus(); }
-
-    function toggleTheme() { document.body.classList.toggle('light'); localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark'); }
-    function loadTheme() { if(localStorage.getItem('theme') === 'light') document.body.classList.add('light'); }
-
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
-
-    // ========== ЗАПУСК ==========
-    renderCards();
-    renderChat();
-    loadTheme();
-    updateStats();
-    renderMatches();
-
-    if(isAdmin) {
-        document.getElementById('adminLoginBtnHeader').style.display = 'none';
-        document.getElementById('adminLoggedInPanelHeader').style.display = 'inline-block';
-    } else {
-        document.getElementById('adminLoginBtnHeader').style.display = 'inline-block';
-        document.getElementById('adminLoggedInPanelHeader').style.display = 'none';
-    }
-
-    // Экспорт в глобальную область
-    window.ratePost = ratePost;
-    window.likePost = likePost;
-    window.deletePost = deletePost;
-    window.addToSteam = addToSteam;
-    window.filterPosts = filterPosts;
-    window.toggleTheme = toggleTheme;
-    window.toggleChat = toggleChat;
-    window.sendMessage = sendMessage;
+    // Вкладки
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            if (tab === 'posts') document.getElementById('postsTab').classList.add('active');
+            else if (tab === 'matches') document.getElementById('matchesTab').classList.add('active');
+            else if (tab === 'chat') {
+                document.getElementById('chatModal').style.display = 'flex';
+                document.querySelector('.tab-btn.active').classList.remove('active');
+                document.querySelector('.tab-btn[data-tab="posts"]').classList.add('active');
+                document.getElementById('postsTab').classList.add('active');
+            }
+        });
+    });
+    document.getElementById('closeChatBtn')?.addEventListener('click', () => document.getElementById('chatModal').style.display = 'none');
     window.openChatWithUser = openChatWithUser;
-    window.addPost = addPost;
-    window.applyTemplate = applyTemplate;
-    window.showQR = showQR;
-    window.switchTab = switchTab;
-    window.addMatch = addMatch;
-    window.deleteMatch = deleteMatch;
-    window.adminLogin = adminLogin;
-    window.adminLogout = adminLogout;
-    window.openDonateModal = openDonateModal;
-    window.closeDonateModal = closeDonateModal;
-    window.donate = donate;
-    window.donateCustom = donateCustom;
-    window.donateWithDonationAlerts = donateWithDonationAlerts;
-    window.openTelegramGuide = openTelegramGuide;
-    window.deleteChatMessage = deleteChatMessage;
-    window.writeToAdmin = writeToAdmin;
+
+    // Шаблоны
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.dataset.template;
+            const templates = { awp: { role: 'AWP', desc: 'Играю на AWP, есть микрофон.' }, support: { role: 'Support', desc: 'Поддержка, знаю смоки.' }, igl: { role: 'IGL', desc: 'Капитан, тактика.' }, entry: { role: 'Entry', desc: 'Захожу первым.' } };
+            const t = templates[type];
+            if (t) {
+                document.getElementById('role').value = t.role;
+                document.getElementById('desc').value = t.desc;
+            }
+        });
+    });
+
+    // Поиск и фильтры
+    function filterPosts() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const rankFilter = document.getElementById('filterRank').value;
+        const regionFilter = document.getElementById('filterRegion').value;
+        const allCards = document.querySelectorAll('.player-card');
+        allCards.forEach(card => {
+            const nick = card.querySelector('.player-name')?.innerText.toLowerCase() || '';
+            const rankBadge = card.querySelector('.rank-badge')?.innerText || '';
+            const regionBadge = card.querySelector('.region-badge')?.innerText || '';
+            let match = true;
+            if (search && !nick.includes(search)) match = false;
+            if (rankFilter && !rankBadge.includes(rankFilter)) match = false;
+            if (regionFilter && !regionBadge.includes(regionFilter)) match = false;
+            card.style.display = match ? 'block' : 'none';
+        });
+    }
+    document.getElementById('searchInput')?.addEventListener('input', filterPosts);
+    document.getElementById('filterRank')?.addEventListener('change', filterPosts);
+    document.getElementById('filterRegion')?.addEventListener('change', filterPosts);
 </script>
 </body>
 </html>
