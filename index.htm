@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CS2 TeamFinder — Полная версия</title>
+    <title>CS2 TeamFinder — Админ управление</title>
     <style>
         * {
             margin: 0;
@@ -24,7 +24,7 @@
             color: #1a1a2e;
         }
 
-        /* Фон с анимированными скинами */
+        /* Анимированные скины (без изменений) */
         .skin-bg {
             position: fixed;
             top: 0;
@@ -35,7 +35,6 @@
             z-index: -2;
             pointer-events: none;
         }
-
         .skin {
             position: absolute;
             font-size: 3rem;
@@ -43,21 +42,12 @@
             animation: floatSkin 25s linear infinite;
             filter: drop-shadow(0 0 5px rgba(255,107,53,0.3));
         }
-
-        body.light .skin {
-            opacity: 0.06;
-        }
-
+        body.light .skin { opacity: 0.06; }
         @keyframes floatSkin {
-            0% {
-                transform: translateX(-10%) translateY(0) rotate(0deg);
-            }
-            100% {
-                transform: translateX(110%) translateY(0) rotate(360deg);
-            }
+            0% { transform: translateX(-10%) translateY(0) rotate(0deg); }
+            100% { transform: translateX(110%) translateY(0) rotate(360deg); }
         }
-
-        .skin1 { top: 5%; left: -5%; animation-duration: 28s; animation-delay: 0s; }
+        .skin1 { top: 5%; left: -5%; animation-duration: 28s; }
         .skin2 { top: 20%; left: -5%; animation-duration: 35s; animation-delay: 3s; font-size: 3.5rem; }
         .skin3 { top: 35%; left: -5%; animation-duration: 30s; animation-delay: 7s; }
         .skin4 { top: 50%; left: -5%; animation-duration: 42s; animation-delay: 2s; font-size: 4rem; }
@@ -99,18 +89,15 @@
             align-items: center;
             gap: 0.8rem;
         }
-
         .logo-icon {
             font-size: 2.5rem;
             filter: drop-shadow(0 0 10px rgba(255,107,53,0.5));
             animation: pulse 2s ease infinite;
         }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-
         .logo-text {
             font-size: 1.8rem;
             font-weight: 800;
@@ -119,12 +106,10 @@
             background-clip: text;
             color: transparent;
         }
-
         .logo-text span {
             color: #ffffff;
             background: none;
         }
-
         body.light .logo-text span {
             color: #1a1a2e;
         }
@@ -135,7 +120,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-
         .stat-card {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
@@ -144,12 +128,17 @@
             border: 1px solid rgba(255,107,53,0.3);
             font-size: 0.85rem;
         }
-
         body.light .stat-card {
             background: rgba(0,0,0,0.05);
         }
 
-        .donate-btn {
+        .action-buttons-header {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .header-btn {
             background: linear-gradient(135deg, #ff6b35, #f43f5e);
             border: none;
             padding: 0.5rem 1rem;
@@ -159,12 +148,14 @@
             font-weight: bold;
             transition: all 0.3s;
         }
-
-        .donate-btn:hover {
+        .header-btn.outline {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,107,53,0.3);
+        }
+        .header-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 15px rgba(255,107,53,0.5);
         }
-
         .theme-toggle {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,107,53,0.3);
@@ -175,18 +166,16 @@
             font-weight: bold;
             transition: all 0.3s;
         }
-
         body.light .theme-toggle {
             background: rgba(0,0,0,0.05);
             color: #1a1a2e;
         }
-
         .theme-toggle:hover {
             background: rgba(255,107,53,0.2);
             border-color: #ff6b35;
         }
 
-        /* Tabs */
+        /* Tabs, формы, карточки и остальные стили (без изменений) */
         .tabs {
             display: flex;
             gap: 0.5rem;
@@ -194,7 +183,6 @@
             border-bottom: 1px solid rgba(255,107,53,0.3);
             padding-bottom: 0.5rem;
         }
-
         .tab-btn {
             background: none;
             border: none;
@@ -205,38 +193,26 @@
             font-weight: 500;
             transition: all 0.3s;
         }
-
-        .tab-btn:hover {
-            color: #ff6b35;
-        }
-
+        .tab-btn:hover { color: #ff6b35; }
         .tab-btn.active {
             background: linear-gradient(135deg, #ff6b35, #f43f5e);
             color: white;
         }
-
         .tab-content {
             display: none;
             animation: fadeIn 0.3s ease;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .tab-content.active { display: block; }
 
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Две колонки */
         .two-columns {
             display: grid;
             grid-template-columns: 380px 1fr;
             gap: 1.8rem;
         }
-
-        /* Форма */
         .form-card {
             background: rgba(20, 25, 45, 0.7);
             backdrop-filter: blur(16px);
@@ -247,22 +223,18 @@
             top: 1rem;
             transition: all 0.3s;
         }
-
         body.light .form-card {
             background: rgba(255,255,255,0.7);
         }
-
         .form-card:hover {
             border-color: rgba(255,107,53,0.6);
             box-shadow: 0 0 20px rgba(255,107,53,0.1);
         }
-
         .form-title {
             font-size: 1.3rem;
             margin-bottom: 1.2rem;
             font-weight: 600;
         }
-
         input, textarea, select {
             width: 100%;
             padding: 0.8rem 1rem;
@@ -274,31 +246,23 @@
             font-size: 0.9rem;
             transition: all 0.3s;
         }
-
         body.light input, body.light textarea, body.light select {
             background: white;
             border: 1px solid #ccc;
             color: #1a1a2e;
         }
-
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #ff6b35;
             box-shadow: 0 0 0 3px rgba(255,107,53,0.2);
         }
-
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 0.8rem;
         }
-
-        .checkbox-group input {
-            width: auto;
-            margin: 0;
-        }
-
+        .checkbox-group input { width: auto; margin: 0; }
         .btn-primary {
             background: linear-gradient(135deg, #ff6b35, #f43f5e);
             width: 100%;
@@ -310,33 +274,24 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
             filter: brightness(1.05);
             box-shadow: 0 10px 20px rgba(255,107,53,0.3);
         }
-
-        /* Поиск */
         .search-bar {
             display: flex;
             gap: 0.8rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
+        .search-bar input, .search-bar select { margin-bottom: 0; flex: 1; }
 
-        .search-bar input, .search-bar select {
-            margin-bottom: 0;
-            flex: 1;
-        }
-
-        /* Карточки */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 1.2rem;
         }
-
         .player-card {
             background: rgba(20, 25, 45, 0.6);
             backdrop-filter: blur(12px);
@@ -345,18 +300,15 @@
             border: 1px solid rgba(255,107,53,0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         body.light .player-card {
             background: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .player-card:hover {
             transform: translateY(-5px);
             border-color: rgba(255,107,53,0.5);
             box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
         }
-
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -364,7 +316,6 @@
             margin-bottom: 0.8rem;
             flex-wrap: wrap;
         }
-
         .player-name {
             font-size: 1.2rem;
             font-weight: 700;
@@ -373,7 +324,6 @@
             background-clip: text;
             color: transparent;
         }
-
         .likes {
             display: flex;
             align-items: center;
@@ -382,11 +332,7 @@
             padding: 0.2rem 0.6rem;
             border-radius: 2rem;
         }
-
-        body.light .likes {
-            background: rgba(0,0,0,0.05);
-        }
-
+        body.light .likes { background: rgba(0,0,0,0.05); }
         .like-btn {
             background: none;
             border: none;
@@ -394,14 +340,8 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-
-        .like-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .liked {
-            color: #ff4444;
-        }
+        .like-btn:hover { transform: scale(1.1); }
+        .liked { color: #ff4444; }
 
         .stars {
             display: flex;
@@ -414,16 +354,9 @@
             color: #4a4a6a;
             transition: all 0.2s;
         }
-        .star:hover {
-            transform: scale(1.1);
-        }
-        .star.active {
-            color: #ffd700;
-            text-shadow: 0 0 5px #ffd700;
-        }
-        body.light .star {
-            color: #ccc;
-        }
+        .star:hover { transform: scale(1.1); }
+        .star.active { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
+        body.light .star { color: #ccc; }
 
         .badge {
             display: inline-block;
@@ -450,12 +383,10 @@
             padding: 0.6rem;
             border-radius: 1rem;
         }
-
         body.light .desc-text {
             color: #4a5568;
             background: #f7fafc;
         }
-
         .social-links {
             display: flex;
             gap: 0.5rem;
@@ -469,9 +400,7 @@
             text-decoration: none;
             transition: all 0.2s;
         }
-        .social-link:hover {
-            transform: translateY(-2px);
-        }
+        .social-link:hover { transform: translateY(-2px); }
         .discord-link { background: #5865f2; color: white; }
         .twitch-link { background: #9146ff; color: white; }
         .telegram-link { background: #0088cc; color: white; }
@@ -484,11 +413,7 @@
             font-size: 0.7rem;
             display: inline-block;
         }
-
-        body.light .steam-code {
-            background: #e2e8f0;
-        }
-
+        body.light .steam-code { background: #e2e8f0; }
         .qr-code {
             text-align: center;
             margin: 0.6rem 0;
@@ -497,9 +422,7 @@
             color: #66c0f4;
             transition: all 0.2s;
         }
-        .qr-code:hover {
-            color: #ff6b35;
-        }
+        .qr-code:hover { color: #ff6b35; }
 
         .action-buttons {
             display: flex;
@@ -530,7 +453,6 @@
             border-radius: 1.5rem;
             color: #6b7280;
         }
-
         .date-small {
             font-size: 0.6rem;
             color: #6b7280;
@@ -545,7 +467,6 @@
             gap: 1.2rem;
             margin-top: 1rem;
         }
-
         .match-card {
             background: rgba(20, 25, 45, 0.6);
             backdrop-filter: blur(12px);
@@ -554,23 +475,19 @@
             border: 1px solid rgba(255,107,53,0.2);
             transition: all 0.3s;
         }
-
         body.light .match-card {
             background: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .match-card:hover {
             transform: translateY(-5px);
             border-color: rgba(255,107,53,0.5);
         }
-
         .match-title {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-
         .match-link {
             display: inline-block;
             margin-top: 0.6rem;
@@ -582,12 +499,10 @@
             font-size: 0.7rem;
             transition: all 0.3s;
         }
-
         .match-link:hover {
             background: #ff6b35;
             color: white;
         }
-
         .admin-panel {
             background: rgba(255,107,53,0.1);
             border-radius: 1rem;
@@ -595,21 +510,13 @@
             margin-bottom: 1.5rem;
             border: 1px solid rgba(255,107,53,0.3);
         }
-
         .add-match-form {
             display: flex;
             gap: 0.8rem;
             flex-wrap: wrap;
         }
-        .add-match-form input {
-            flex: 2;
-            margin: 0;
-        }
-        .add-match-form button {
-            flex: 1;
-            margin: 0;
-        }
-
+        .add-match-form input { flex: 2; margin: 0; }
+        .add-match-form button { flex: 1; margin: 0; }
         .logout-admin-btn {
             background: rgba(220,38,38,0.2);
             border: 1px solid rgba(220,38,38,0.3);
@@ -634,9 +541,7 @@
             z-index: 1000;
             flex-direction: column;
         }
-        body.light .chat-modal {
-            background: white;
-        }
+        body.light .chat-modal { background: white; }
         .chat-header {
             background: linear-gradient(135deg, #ff6b35, #f43f5e);
             padding: 0.7rem;
@@ -658,12 +563,8 @@
             gap: 0.5rem;
             border-top: 1px solid #334155;
         }
-        .chat-input-area input {
-            margin: 0;
-        }
-        body.light .chat-input-area {
-            border-top: 1px solid #ccc;
-        }
+        .chat-input-area input { margin: 0; }
+        body.light .chat-input-area { border-top: 1px solid #ccc; }
 
         .templates {
             display: flex;
@@ -689,7 +590,7 @@
             color: white;
         }
 
-        /* Модалка доната — в стиле сайта */
+        /* Модалка доната */
         .donate-modal {
             display: none;
             position: fixed;
@@ -747,9 +648,7 @@
             font-weight: 600;
             transition: all 0.3s;
         }
-        body.light .donate-amount {
-            background: rgba(0,0,0,0.05);
-        }
+        body.light .donate-amount { background: rgba(0,0,0,0.05); }
         .donate-amount:hover {
             background: linear-gradient(135deg, #ff6b35, #f43f5e);
             transform: translateY(-2px);
@@ -826,15 +725,10 @@
         }
 
         @media (max-width: 800px) {
-            .container {
-                padding: 1rem;
-            }
-            .two-columns {
-                grid-template-columns: 1fr;
-            }
-            .form-card {
-                position: static;
-            }
+            .container { padding: 1rem; }
+            .two-columns { grid-template-columns: 1fr; }
+            .form-card { position: static; }
+            .action-buttons-header { margin-top: 0.5rem; }
         }
     </style>
 </head>
@@ -859,8 +753,17 @@
         <div class="stats-panel">
             <div class="stat-card">👥 <span id="onlineCounter">0</span></div>
             <div class="stat-card">🔥 <span id="topRoles">--</span></div>
-            <button class="donate-btn" onclick="openDonateModal()">🎁 Поддержать</button>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            <div class="action-buttons-header">
+                <div id="adminLoginBtnHeader" style="display: inline-block;">
+                    <button class="header-btn" onclick="adminLogin()">🔑 Войти как админ</button>
+                </div>
+                <div id="adminLoggedInPanelHeader" style="display: none;">
+                    <button class="header-btn outline" onclick="adminLogout()">🚪 Выйти из админки</button>
+                </div>
+                <button class="header-btn" onclick="openDonateModal()">🎁 Поддержать</button>
+                <button class="header-btn outline" onclick="writeToAdmin()">📨 Написать админу</button>
+                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            </div>
         </div>
     </div>
 
@@ -939,11 +842,11 @@
                 <input type="text" id="matchLink" placeholder="Ссылка">
                 <button class="btn-primary" onclick="addMatch()" style="width: auto;">➕ Добавить</button>
             </div>
+            <div style="margin-top: 0.8rem;">
+                <button class="btn-primary" onclick="openTelegramGuide()" style="background: #0088cc;">📨 Настроить Telegram-уведомления</button>
+            </div>
         </div>
         <div id="matchesContainer" class="matches-grid"></div>
-        <div id="loginToAdmin" style="text-align: center; margin-top: 1rem;">
-            <button class="theme-toggle" onclick="adminLogin()">🔑 Войти как админ</button>
-        </div>
     </div>
 </div>
 
@@ -959,7 +862,7 @@
         </div>
         <div class="donate-custom">
             <input type="number" id="customAmount" placeholder="Своя сумма">
-            <button onclick="donateCustom()">Поддержать</button>
+            <button onclick="donateCustom()">Дать</button>
         </div>
         <button class="donate-button" onclick="donateWithDonationAlerts()">💳 Перейти к оплате</button>
         <button class="close-modal" onclick="closeDonateModal()">Закрыть</button>
@@ -976,6 +879,7 @@
 </div>
 
 <script>
+    // ========== ДАННЫЕ ==========
     let posts = JSON.parse(localStorage.getItem('cs2_posts') || '[]');
     let chatMessages = JSON.parse(localStorage.getItem('cs2_chat') || '["💬 Добро пожаловать!"]');
     let matches = JSON.parse(localStorage.getItem('cs2_matches') || '[]');
@@ -986,59 +890,95 @@
         localStorage.setItem('deviceId', deviceId);
     }
 
-    const ADMIN_PASSWORD = '545469123';
+    const ADMIN_PASSWORD = 'admin123';
     const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/screpochkaa'; // ЗАМЕНИТЕ
+    const TELEGRAM_ADMIN_LINK = 'https://t.me/+vIWetVa_XDw3MjIy'; // ЗАМЕНИТЕ (ссылка для связи)
 
-    function openDonateModal() { document.getElementById('donateModal').style.display = 'flex'; }
-    function closeDonateModal() { document.getElementById('donateModal').style.display = 'none'; }
-    function donate(amount) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); }
-    function donateCustom() { let amount = document.getElementById('customAmount').value; if(amount && amount>0) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); } else alert('Введите сумму'); }
-    function donateWithDonationAlerts() { window.open(DONATION_ALERTS_URL, '_blank'); closeDonateModal(); }
+    // ========== МИГРАЦИЯ СТАРЫХ ПОСТОВ ==========
+    posts = posts.map(post => {
+        if (!post.authorDeviceId) post.authorDeviceId = null;
+        return post;
+    });
+    localStorage.setItem('cs2_posts', JSON.stringify(posts));
 
-    function adminLogin() { let pwd = prompt('Пароль:'); if(pwd === ADMIN_PASSWORD) { localStorage.setItem('isAdmin', 'true'); isAdmin = true; alert('✅ Вы вошли как админ'); renderMatches(); } else alert('❌ Неверный пароль'); }
-    function adminLogout() { localStorage.setItem('isAdmin', 'false'); isAdmin = false; alert('🚪 Вы вышли из админки'); renderMatches(); }
-
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        if(tab === 'posts') { document.querySelector('.tab-btn:first-child').classList.add('active'); document.getElementById('postsTab').classList.add('active'); }
-        else if(tab === 'matches') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('matchesTab').classList.add('active'); renderMatches(); }
+    // ========== ФУНКЦИИ ДЛЯ ОБЪЯВЛЕНИЙ ==========
+    function saveAndRender() {
+        localStorage.setItem('cs2_posts', JSON.stringify(posts));
+        renderCards();
+        updateStats();
     }
 
-    function addMatch() { if(!isAdmin) { alert('⛔ Только админ'); return; } let title = document.getElementById('matchTitle').value.trim(); let link = document.getElementById('matchLink').value.trim(); if(!title || !link) { alert('Заполните поля'); return; } matches.unshift({ id: Date.now(), title, link, date: new Date().toLocaleString() }); localStorage.setItem('cs2_matches', JSON.stringify(matches)); renderMatches(); document.getElementById('matchTitle').value = ''; document.getElementById('matchLink').value = ''; }
-    function deleteMatch(id) { if(!isAdmin) { alert('⛔ Только админ'); return; } if(confirm('Удалить матч?')) { matches = matches.filter(m => m.id !== id); localStorage.setItem('cs2_matches', JSON.stringify(matches)); renderMatches(); } }
+    function addPost() {
+        let nick = document.getElementById('nick').value.trim();
+        let rank = document.getElementById('rank').value.trim();
+        let role = document.getElementById('role').value.trim();
+        let hasMic = document.getElementById('hasMic').checked;
+        let region = document.getElementById('region').value;
+        let playTime = document.getElementById('playTime').value;
+        let faceit = document.getElementById('faceitLevel').value;
+        let discord = document.getElementById('discord').value.trim();
+        let twitch = document.getElementById('twitch').value.trim();
+        let telegram = document.getElementById('telegram').value.trim();
+        let desc = document.getElementById('desc').value.trim();
+        let steam = document.getElementById('steam').value.trim();
+        let verified = document.getElementById('verifiedSteam').checked;
 
-    function renderMatches() {
-        let container = document.getElementById('matchesContainer');
-        let adminPanel = document.getElementById('adminPanel');
-        let loginBtn = document.getElementById('loginToAdmin');
-        if(isAdmin) { if(adminPanel) adminPanel.style.display = 'block'; if(loginBtn) loginBtn.style.display = 'none'; }
-        else { if(adminPanel) adminPanel.style.display = 'none'; if(loginBtn) loginBtn.style.display = 'block'; }
-        if(matches.length === 0) { container.innerHTML = '<div class="empty-state">🎬 Нет матчей</div>'; return; }
-        let html = '';
-        for(let m of matches) {
-            let platform = '';
-            if(m.link.includes('twitch.tv')) platform = '📺 Twitch';
-            else if(m.link.includes('youtube.com') || m.link.includes('youtu.be')) platform = '🎥 YouTube';
-            else if(m.link.includes('faceit.com')) platform = '🎮 FACEIT';
-            html += `<div class="match-card"><div class="match-title">🎬 ${escapeHtml(m.title)}</div><div style="font-size:0.65rem; color:#66c0f4;">${platform}</div><a href="${m.link}" target="_blank" class="match-link">▶ Смотреть</a>${isAdmin ? `<button class="btn-delete" onclick="deleteMatch(${m.id})" style="margin-left:0.5rem;">🗑</button>` : ''}<div class="date-small">📅 ${m.date}</div></div>`;
+        if(!nick || !rank || !role || !desc || !steam) {
+            alert('Заполните все поля');
+            return;
         }
-        container.innerHTML = html;
+
+        posts.unshift({
+            id: Date.now(),
+            nick, rank, role, hasMic, region, playTime, faceit,
+            discord, twitch, telegram, desc, steam, verified,
+            likes: 0,
+            likedBy: [],
+            ratingCount: 0,
+            ratingSum: 0,
+            avgRating: 0,
+            ratedBy: [],
+            authorDeviceId: deviceId,
+            date: new Date().toLocaleString()
+        });
+        saveAndRender();
+
+        // Очистка формы
+        document.getElementById('nick').value = '';
+        document.getElementById('rank').value = '';
+        document.getElementById('role').value = '';
+        document.getElementById('hasMic').checked = false;
+        document.getElementById('region').value = '';
+        document.getElementById('playTime').value = '';
+        document.getElementById('faceitLevel').value = '0';
+        document.getElementById('discord').value = '';
+        document.getElementById('twitch').value = '';
+        document.getElementById('telegram').value = '';
+        document.getElementById('desc').value = '';
+        document.getElementById('steam').value = '';
+        document.getElementById('verifiedSteam').checked = false;
     }
 
-    function updateStats() {
-        document.getElementById('onlineCounter').innerHTML = posts.length;
-        let roles = {};
-        posts.forEach(p => { roles[p.role] = (roles[p.role] || 0) + 1; });
-        let top = Object.entries(roles).sort((a,b) => b[1] - a[1]).slice(0,2);
-        document.getElementById('topRoles').innerHTML = top.map(r => `${r[0]}(${r[1]})`).join(' ') || 'нет';
+    // Админ может удалить любой пост
+    function deletePost(id) {
+        if(!isAdmin) {
+            alert('❌ Только администратор может удалять объявления!');
+            return;
+        }
+        if(confirm('Удалить объявление?')) {
+            posts = posts.filter(p => p.id !== id);
+            saveAndRender();
+        }
     }
 
     function likePost(id) {
         let post = posts.find(p => p.id == id);
         if(!post) return;
         if(!post.likedBy) post.likedBy = [];
-        if(post.likedBy.includes(deviceId)) { alert('❤️ Вы уже лайкнули'); return; }
+        if(post.likedBy.includes(deviceId)) {
+            alert('❤️ Вы уже лайкнули');
+            return;
+        }
         post.likedBy.push(deviceId);
         post.likes = (post.likes || 0) + 1;
         saveAndRender();
@@ -1048,7 +988,10 @@
         let post = posts.find(p => p.id == id);
         if(post) {
             if(!post.ratedBy) post.ratedBy = [];
-            if(post.ratedBy.includes(deviceId)) { alert('⭐ Вы уже оценили'); return; }
+            if(post.ratedBy.includes(deviceId)) {
+                alert('⭐ Вы уже оценили');
+                return;
+            }
             post.ratedBy.push(deviceId);
             post.ratingCount = (post.ratingCount || 0) + 1;
             post.ratingSum = (post.ratingSum || 0) + rating;
@@ -1070,51 +1013,263 @@
     }
 
     function showQR(steamId) { alert(`🎮 Код: ${steamId}\nsteam://friends/add/${steamId}`); }
-    function saveAndRender() { localStorage.setItem('cs2_posts', JSON.stringify(posts)); renderCards(); updateStats(); }
-
-    function addPost() {
-        let nick = document.getElementById('nick').value.trim(), rank = document.getElementById('rank').value.trim(), role = document.getElementById('role').value.trim(), hasMic = document.getElementById('hasMic').checked, region = document.getElementById('region').value, playTime = document.getElementById('playTime').value, faceit = document.getElementById('faceitLevel').value, discord = document.getElementById('discord').value.trim(), twitch = document.getElementById('twitch').value.trim(), telegram = document.getElementById('telegram').value.trim(), desc = document.getElementById('desc').value.trim(), steam = document.getElementById('steam').value.trim(), verified = document.getElementById('verifiedSteam').checked;
-        if(!nick || !rank || !role || !desc || !steam) { alert('Заполните все поля'); return; }
-        posts.unshift({ id: Date.now(), nick, rank, role, hasMic, region, playTime, faceit, discord, twitch, telegram, desc, steam, verified, likes:0, likedBy:[], ratingCount:0, ratingSum:0, avgRating:0, ratedBy:[], date: new Date().toLocaleString() });
-        saveAndRender();
-        document.getElementById('nick').value=''; document.getElementById('rank').value=''; document.getElementById('role').value=''; document.getElementById('hasMic').checked=false; document.getElementById('region').value=''; document.getElementById('playTime').value=''; document.getElementById('faceitLevel').value='0'; document.getElementById('discord').value=''; document.getElementById('twitch').value=''; document.getElementById('telegram').value=''; document.getElementById('desc').value=''; document.getElementById('steam').value=''; document.getElementById('verifiedSteam').checked=false;
-    }
-
-    function deletePost(id) { if(confirm('Удалить?')) { posts = posts.filter(p=>p.id!==id); saveAndRender(); } }
     function addToSteam(steamId) { window.open('steam://friends/add/'+steamId, '_blank'); alert('Код: '+steamId); }
 
     function filterPosts() {
-        let search = document.getElementById('searchInput').value.toLowerCase(), rankFilter = document.getElementById('filterRank').value, regionFilter = document.getElementById('filterRegion').value;
+        let search = document.getElementById('searchInput').value.toLowerCase();
+        let rankFilter = document.getElementById('filterRank').value;
+        let regionFilter = document.getElementById('filterRegion').value;
         let filtered = posts.filter(p => p.nick.toLowerCase().includes(search) && (rankFilter === '' || p.rank === rankFilter) && (regionFilter === '' || p.region === regionFilter));
         renderCards(filtered);
     }
 
     function renderCards(filteredList = null) {
-        let container = document.getElementById('cardsContainer'), list = filteredList !== null ? filteredList : posts;
-        if(list.length === 0) { container.innerHTML = '<div class="empty-state">😢 Нет объявлений</div>'; return; }
+        let container = document.getElementById('cardsContainer');
+        let list = filteredList !== null ? filteredList : posts;
+        if(list.length === 0) {
+            container.innerHTML = '<div class="empty-state">😢 Нет объявлений</div>';
+            return;
+        }
         let html = '';
         for(let p of list) {
             let hasLiked = p.likedBy && p.likedBy.includes(deviceId);
-            html += `<div class="player-card"><div class="card-header"><div class="player-name">🎮 ${escapeHtml(p.nick)}${p.verified ? ' ✅' : ''}</div><div class="likes"><button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="likePost(${p.id})">❤️</button><span>${p.likes || 0}</span></div></div>${getStarsHtml(p.id, p.avgRating || 0)}<div><span class="badge rank-badge">🏆 ${escapeHtml(p.rank)}</span><span class="badge role-badge">⚔️ ${escapeHtml(p.role)}</span>${p.hasMic ? '<span class="badge mic-badge">🎙️ Микрофон</span>' : ''}${p.region ? `<span class="badge region-badge">🌍 ${escapeHtml(p.region)}</span>` : ''}${p.playTime ? `<span class="badge time-badge">🕐 ${escapeHtml(p.playTime)}</span>` : ''}${p.faceit && p.faceit > 0 ? `<span class="badge faceit-level">🎯 FACEIT lvl ${p.faceit}</span>` : ''}</div><div class="desc-text">📌 ${escapeHtml(p.desc)}</div><div class="social-links">${p.discord ? `<a href="https://discord.gg/${p.discord}" target="_blank" class="social-link discord-link">Discord</a>` : ''}${p.twitch ? `<a href="https://twitch.tv/${p.twitch}" target="_blank" class="social-link twitch-link">Twitch</a>` : ''}${p.telegram ? `<a href="https://t.me/${p.telegram}" target="_blank" class="social-link telegram-link">Telegram</a>` : ''}</div><div class="steam-code">Steam: ${escapeHtml(p.steam)}</div><div class="qr-code" onclick="showQR('${p.steam}')">📱 QR-код</div><div class="action-buttons"><button class="btn-steam" onclick="addToSteam('${p.steam}')">➕ Добавить в Steam</button><button class="chat-btn" onclick="openChatWithUser('${p.nick}')">💬 Написать</button><button class="btn-delete" onclick="deletePost(${p.id})">🗑 Удалить</button></div><div class="date-small">📅 ${p.date}</div></div>`;
+            html += `<div class="player-card">
+                        <div class="card-header">
+                            <div class="player-name">🎮 ${escapeHtml(p.nick)}${p.verified ? ' ✅' : ''}</div>
+                            <div class="likes"><button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="likePost(${p.id})">❤️</button><span>${p.likes || 0}</span></div>
+                        </div>
+                        ${getStarsHtml(p.id, p.avgRating || 0)}
+                        <div>
+                            <span class="badge rank-badge">🏆 ${escapeHtml(p.rank)}</span>
+                            <span class="badge role-badge">⚔️ ${escapeHtml(p.role)}</span>
+                            ${p.hasMic ? '<span class="badge mic-badge">🎙️ Микрофон</span>' : ''}
+                            ${p.region ? `<span class="badge region-badge">🌍 ${escapeHtml(p.region)}</span>` : ''}
+                            ${p.playTime ? `<span class="badge time-badge">🕐 ${escapeHtml(p.playTime)}</span>` : ''}
+                            ${p.faceit && p.faceit > 0 ? `<span class="badge faceit-level">🎯 FACEIT lvl ${p.faceit}</span>` : ''}
+                        </div>
+                        <div class="desc-text">📌 ${escapeHtml(p.desc)}</div>
+                        <div class="social-links">
+                            ${p.discord ? `<a href="https://discord.gg/${p.discord}" target="_blank" class="social-link discord-link">Discord</a>` : ''}
+                            ${p.twitch ? `<a href="https://twitch.tv/${p.twitch}" target="_blank" class="social-link twitch-link">Twitch</a>` : ''}
+                            ${p.telegram ? `<a href="https://t.me/${p.telegram}" target="_blank" class="social-link telegram-link">Telegram</a>` : ''}
+                        </div>
+                        <div class="steam-code">Steam: ${escapeHtml(p.steam)}</div>
+                        <div class="qr-code" onclick="showQR('${p.steam}')">📱 QR-код</div>
+                        <div class="action-buttons">
+                            <button class="btn-steam" onclick="addToSteam('${p.steam}')">➕ Добавить в Steam</button>
+                            <button class="chat-btn" onclick="openChatWithUser('${p.nick}')">💬 Написать</button>
+                            ${isAdmin ? `<button class="btn-delete" onclick="deletePost(${p.id})">🗑 Удалить (админ)</button>` : ''}
+                        </div>
+                        <div class="date-small">📅 ${p.date}</div>
+                    </div>`;
         }
         container.innerHTML = html;
     }
 
-    function toggleChat() { let modal = document.getElementById('chatModal'); modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
-    function sendMessage() { let input = document.getElementById('chatInput'), msg = input.value.trim(); if(msg) { chatMessages.push(`🧑 ${escapeHtml(msg)}`); localStorage.setItem('cs2_chat', JSON.stringify(chatMessages)); renderChat(); input.value = ''; } }
-    function renderChat() { let container = document.getElementById('chatMessages'); container.innerHTML = chatMessages.map(m => `<div>${m}</div>`).join(''); container.scrollTop = container.scrollHeight; }
+    // ========== МАТЧИ (ВИДНЫ ВСЕМ, УПРАВЛЯЕТ АДМИН) ==========
+    function addMatch() {
+        if(!isAdmin) { alert('⛔ Только админ'); return; }
+        let title = document.getElementById('matchTitle').value.trim();
+        let link = document.getElementById('matchLink').value.trim();
+        if(!title || !link) { alert('Заполните поля'); return; }
+        matches.unshift({ id: Date.now(), title, link, date: new Date().toLocaleString() });
+        localStorage.setItem('cs2_matches', JSON.stringify(matches));
+        renderMatches();
+        document.getElementById('matchTitle').value = '';
+        document.getElementById('matchLink').value = '';
+    }
+
+    function deleteMatch(id) {
+        if(!isAdmin) { alert('⛔ Только админ'); return; }
+        if(confirm('Удалить матч?')) {
+            matches = matches.filter(m => m.id !== id);
+            localStorage.setItem('cs2_matches', JSON.stringify(matches));
+            renderMatches();
+        }
+    }
+
+    function renderMatches() {
+        let container = document.getElementById('matchesContainer');
+        let adminPanel = document.getElementById('adminPanel');
+        if(isAdmin) {
+            if(adminPanel) adminPanel.style.display = 'block';
+        } else {
+            if(adminPanel) adminPanel.style.display = 'none';
+        }
+        if(matches.length === 0) {
+            container.innerHTML = '<div class="empty-state">🎬 Нет матчей</div>';
+            return;
+        }
+        let html = '';
+        for(let m of matches) {
+            let platform = '';
+            if(m.link.includes('twitch.tv')) platform = '📺 Twitch';
+            else if(m.link.includes('youtube.com') || m.link.includes('youtu.be')) platform = '🎥 YouTube';
+            else if(m.link.includes('faceit.com')) platform = '🎮 FACEIT';
+            html += `<div class="match-card">
+                        <div class="match-title">🎬 ${escapeHtml(m.title)}</div>
+                        <div style="font-size:0.65rem; color:#66c0f4;">${platform}</div>
+                        <a href="${m.link}" target="_blank" class="match-link">▶ Смотреть</a>
+                        ${isAdmin ? `<button class="btn-delete" onclick="deleteMatch(${m.id})" style="margin-left:0.5rem;">🗑 Удалить</button>` : ''}
+                        <div class="date-small">📅 ${m.date}</div>
+                    </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    // ========== ЧАТ С УДАЛЕНИЕМ ДЛЯ АДМИНА ==========
+    function renderChat() {
+        let container = document.getElementById('chatMessages');
+        let html = '';
+        for(let i=0; i<chatMessages.length; i++) {
+            let msg = chatMessages[i];
+            html += `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                        <span>${msg}</span>
+                        ${isAdmin ? `<button onclick="deleteChatMessage(${i})" style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.7rem;">🗑</button>` : ''}
+                    </div>`;
+        }
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function deleteChatMessage(index) {
+        if(!isAdmin) return;
+        if(confirm('Удалить сообщение?')) {
+            chatMessages.splice(index, 1);
+            localStorage.setItem('cs2_chat', JSON.stringify(chatMessages));
+            renderChat();
+        }
+    }
+
+    function sendMessage() {
+        let input = document.getElementById('chatInput');
+        let msg = input.value.trim();
+        if(msg) {
+            chatMessages.push(`🧑 ${escapeHtml(msg)}`);
+            localStorage.setItem('cs2_chat', JSON.stringify(chatMessages));
+            renderChat();
+            input.value = '';
+        }
+    }
+
+    // ========== АДМИН ==========
+    function adminLogin() {
+        let pwd = prompt('Пароль:');
+        if(pwd === ADMIN_PASSWORD) {
+            localStorage.setItem('isAdmin', 'true');
+            isAdmin = true;
+            alert('✅ Вы вошли как админ');
+            document.getElementById('adminLoginBtnHeader').style.display = 'none';
+            document.getElementById('adminLoggedInPanelHeader').style.display = 'inline-block';
+            renderCards();
+            renderMatches();
+            renderChat();
+            switchTab('matches');
+        } else {
+            alert('❌ Неверный пароль');
+        }
+    }
+
+    function adminLogout() {
+        localStorage.setItem('isAdmin', 'false');
+        isAdmin = false;
+        alert('🚪 Вы вышли из админки');
+        document.getElementById('adminLoginBtnHeader').style.display = 'inline-block';
+        document.getElementById('adminLoggedInPanelHeader').style.display = 'none';
+        renderCards();
+        renderMatches();
+        renderChat();
+        switchTab('posts');
+    }
+
+    // ========== ДОНАТ ==========
+    function openDonateModal() { document.getElementById('donateModal').style.display = 'flex'; }
+    function closeDonateModal() { document.getElementById('donateModal').style.display = 'none'; }
+    function donate(amount) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); }
+    function donateCustom() { let amount = document.getElementById('customAmount').value; if(amount && amount>0) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); } else alert('Введите сумму'); }
+    function donateWithDonationAlerts() { window.open(DONATION_ALERTS_URL, '_blank'); closeDonateModal(); }
+
+    // ========== СВЯЗЬ С АДМИНОМ (доступно всем) ==========
+    function writeToAdmin() {
+        window.open(TELEGRAM_ADMIN_LINK, '_blank');
+    }
+
+    function openTelegramGuide() {
+        alert('📨 Чтобы получать уведомления о новых постах и сообщениях в Telegram:\n\n1. Создайте бота через @BotFather\n2. Получите свой Chat ID через @userinfobot\n3. Используйте сервис Make.com или IFTTT для отправки вебхуков\n\nИли просто напишите администратору в Telegram: ' + TELEGRAM_ADMIN_LINK);
+        window.open(TELEGRAM_ADMIN_LINK, '_blank');
+    }
+
+    // ========== ОБЩИЕ ФУНКЦИИ ==========
+    function updateStats() {
+        document.getElementById('onlineCounter').innerHTML = posts.length;
+        let roles = {};
+        posts.forEach(p => { roles[p.role] = (roles[p.role] || 0) + 1; });
+        let top = Object.entries(roles).sort((a,b) => b[1] - a[1]).slice(0,2);
+        document.getElementById('topRoles').innerHTML = top.map(r => `${r[0]}(${r[1]})`).join(' ') || 'нет';
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        if(tab === 'posts') {
+            document.querySelector('.tab-btn:first-child').classList.add('active');
+            document.getElementById('postsTab').classList.add('active');
+        } else if(tab === 'matches') {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('matchesTab').classList.add('active');
+            renderMatches();
+        }
+    }
+
+    function toggleChat() { let modal = document.getElementById('chatModal'); modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; renderChat(); }
     function openChatWithUser(nick) { toggleChat(); document.getElementById('chatInput').value = `@${nick} `; document.getElementById('chatInput').focus(); }
 
-    function toggleTheme() {
-        document.body.classList.toggle('light');
-        localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
-    }
+    function toggleTheme() { document.body.classList.toggle('light'); localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark'); }
     function loadTheme() { if(localStorage.getItem('theme') === 'light') document.body.classList.add('light'); }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
 
-    renderCards(); renderChat(); loadTheme(); updateStats(); renderMatches();
-    window.ratePost=ratePost; window.likePost=likePost; window.deletePost=deletePost; window.addToSteam=addToSteam; window.filterPosts=filterPosts; window.toggleTheme=toggleTheme; window.toggleChat=toggleChat; window.sendMessage=sendMessage; window.openChatWithUser=openChatWithUser; window.addPost=addPost; window.applyTemplate=applyTemplate; window.showQR=showQR; window.switchTab=switchTab; window.addMatch=addMatch; window.deleteMatch=deleteMatch; window.adminLogin=adminLogin; window.adminLogout=adminLogout; window.openDonateModal=openDonateModal; window.closeDonateModal=closeDonateModal; window.donate=donate; window.donateCustom=donateCustom; window.donateWithDonationAlerts=donateWithDonationAlerts;
+    // ========== ЗАПУСК ==========
+    renderCards();
+    renderChat();
+    loadTheme();
+    updateStats();
+    renderMatches();
+
+    if(isAdmin) {
+        document.getElementById('adminLoginBtnHeader').style.display = 'none';
+        document.getElementById('adminLoggedInPanelHeader').style.display = 'inline-block';
+    } else {
+        document.getElementById('adminLoginBtnHeader').style.display = 'inline-block';
+        document.getElementById('adminLoggedInPanelHeader').style.display = 'none';
+    }
+
+    // Экспорт в глобальную область
+    window.ratePost = ratePost;
+    window.likePost = likePost;
+    window.deletePost = deletePost;
+    window.addToSteam = addToSteam;
+    window.filterPosts = filterPosts;
+    window.toggleTheme = toggleTheme;
+    window.toggleChat = toggleChat;
+    window.sendMessage = sendMessage;
+    window.openChatWithUser = openChatWithUser;
+    window.addPost = addPost;
+    window.applyTemplate = applyTemplate;
+    window.showQR = showQR;
+    window.switchTab = switchTab;
+    window.addMatch = addMatch;
+    window.deleteMatch = deleteMatch;
+    window.adminLogin = adminLogin;
+    window.adminLogout = adminLogout;
+    window.openDonateModal = openDonateModal;
+    window.closeDonateModal = closeDonateModal;
+    window.donate = donate;
+    window.donateCustom = donateCustom;
+    window.donateWithDonationAlerts = donateWithDonationAlerts;
+    window.openTelegramGuide = openTelegramGuide;
+    window.deleteChatMessage = deleteChatMessage;
+    window.writeToAdmin = writeToAdmin;
 </script>
 </body>
 </html>
