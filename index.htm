@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CS2 TeamFinder — Полная версия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #0a0c15;
+            color: #ffffff;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.2s;
+        }
+
+        body.light {
+            background: #f0f2f5;
+            color: #1a1a2e;
+        }
+
+        /* Фон с анимированными скинами */
+        .skin-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .skin {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation: floatSkin 25s linear infinite;
+            filter: drop-shadow(0 0 5px rgba(255,107,53,0.3));
+        }
+
+        body.light .skin {
+            opacity: 0.06;
+        }
+
+        @keyframes floatSkin {
+            0% {
+                transform: translateX(-10%) translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateX(110%) translateY(0) rotate(360deg);
+            }
+        }
+
+        .skin1 { top: 5%; left: -5%; animation-duration: 28s; animation-delay: 0s; }
+        .skin2 { top: 20%; left: -5%; animation-duration: 35s; animation-delay: 3s; font-size: 3.5rem; }
+        .skin3 { top: 35%; left: -5%; animation-duration: 30s; animation-delay: 7s; }
+        .skin4 { top: 50%; left: -5%; animation-duration: 42s; animation-delay: 2s; font-size: 4rem; }
+        .skin5 { top: 65%; left: -5%; animation-duration: 32s; animation-delay: 11s; }
+        .skin6 { top: 80%; left: -5%; animation-duration: 38s; animation-delay: 5s; font-size: 3.5rem; }
+        .skin7 { top: 92%; left: -5%; animation-duration: 27s; animation-delay: 14s; }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 30% 40%, rgba(255,107,53,0.08), transparent 70%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,107,53,0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(255,107,53,0.5));
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b35, #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text span {
+            color: #ffffff;
+            background: none;
+        }
+
+        body.light .logo-text span {
+            color: #1a1a2e;
+        }
+
+        .stats-panel {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255,107,53,0.3);
+            font-size: 0.85rem;
+        }
+
+        body.light .stat-card {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .donate-btn {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .donate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255,107,53,0.5);
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,107,53,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        body.light .theme-toggle {
+            background: rgba(0,0,0,0.05);
+            color: #1a1a2e;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,107,53,0.2);
+            border-color: #ff6b35;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,107,53,0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            color: #94a3b8;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #ff6b35;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Две колонки */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 1.8rem;
+        }
+
+        /* Форма */
+        .form-card {
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,107,53,0.3);
+            position: sticky;
+            top: 1rem;
+            transition: all 0.3s;
+        }
+
+        body.light .form-card {
+            background: rgba(255,255,255,0.7);
+        }
+
+        .form-card:hover {
+            border-color: rgba(255,107,53,0.6);
+            box-shadow: 0 0 20px rgba(255,107,53,0.1);
+        }
+
+        .form-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.8rem;
+            background: rgba(10, 15, 30, 0.8);
+            border: 1px solid #2a2f4a;
+            border-radius: 1rem;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        body.light input, body.light textarea, body.light select {
+            background: white;
+            border: 1px solid #ccc;
+            color: #1a1a2e;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin: 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 2rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+            box-shadow: 0 10px 20px rgba(255,107,53,0.3);
+        }
+
+        /* Поиск */
+        .search-bar {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input, .search-bar select {
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        /* Карточки */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .player-card {
+            background: rgba(20, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(255,107,53,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light .player-card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,107,53,0.5);
+            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .player-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffb347, #ff6b35);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .likes {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+        }
+
+        body.light .likes {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .like-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .liked {
+            color: #ff4444;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.2rem;
+            margin: 0.6rem 0;
+        }
+        .star {
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #4a4a6a;
+            transition: all 0.2s;
+        }
+        .star:hover {
+            transform: scale(1.1);
+        }
+        .star.active {
+            color: #ffd700;
+            text-shadow: 0 0 5px #ffd700;
+        }
+        body.light .star {
+            color: #ccc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
+        }
+        .rank-badge { background: linear-gradient(135deg, #2d3748, #1a202c); color: #fbbf24; border: 1px solid #fbbf2433; }
+        .role-badge { background: linear-gradient(135deg, #1e3a5f, #0f2a4a); color: #7dd3fc; border: 1px solid #7dd3fc33; }
+        .mic-badge { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .region-badge { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
+        .time-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #1a1a2e; }
+        .faceit-level { background: linear-gradient(135deg, #ffd700, #ffb347); color: #1a1a2e; }
+
+        .desc-text {
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #b0b8d0;
+            background: rgba(0,0,0,0.2);
+            padding: 0.6rem;
+            border-radius: 1rem;
+        }
+
+        body.light .desc-text {
+            color: #4a5568;
+            background: #f7fafc;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.8rem 0;
+            flex-wrap: wrap;
+        }
+        .social-link {
+            padding: 0.2rem 0.7rem;
+            border-radius: 1.5rem;
+            font-size: 0.65rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .social-link:hover {
+            transform: translateY(-2px);
+        }
+        .discord-link { background: #5865f2; color: white; }
+        .twitch-link { background: #9146ff; color: white; }
+        .telegram-link { background: #0088cc; color: white; }
+
+        .steam-code {
+            font-family: monospace;
+            background: rgba(0,0,0,0.4);
+            padding: 0.3rem 0.7rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            display: inline-block;
+        }
+
+        body.light .steam-code {
+            background: #e2e8f0;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 0.6rem 0;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: #66c0f4;
+            transition: all 0.2s;
+        }
+        .qr-code:hover {
+            color: #ff6b35;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .btn-steam, .btn-delete, .chat-btn {
+            padding: 0.5rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-steam { background: #171a21; border: 1px solid #66c0f4; color: white; }
+        .btn-steam:hover { background: #2a475e; transform: scale(1.02); }
+        .btn-delete { background: #dc2626; border: none; color: white; }
+        .btn-delete:hover { background: #ef4444; }
+        .chat-btn { background: #3b82f6; border: none; color: white; }
+        .chat-btn:hover { background: #2563eb; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1.5rem;
+            color: #6b7280;
+        }
+
+        .date-small {
+            font-size: 0.6rem;
+            color: #6b7280;
+            text-align: right;
+            margin-top: 0.6rem;
+        }
+
+        /* Матчи */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .match-card {
+            background: rgba(20, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(255,107,53,0.2);
+            transition: all 0.3s;
+        }
+
+        body.light .match-card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,107,53,0.5);
+        }
+
+        .match-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-link {
+            display: inline-block;
+            margin-top: 0.6rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(255,107,53,0.2);
+            border-radius: 2rem;
+            color: #ff6b35;
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: all 0.3s;
+        }
+
+        .match-link:hover {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .admin-panel {
+            background: rgba(255,107,53,0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,107,53,0.3);
+        }
+
+        .add-match-form {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .add-match-form input {
+            flex: 2;
+            margin: 0;
+        }
+        .add-match-form button {
+            flex: 1;
+            margin: 0;
+        }
+
+        .logout-admin-btn {
+            background: rgba(220,38,38,0.2);
+            border: 1px solid rgba(220,38,38,0.3);
+            padding: 0.2rem 0.7rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            color: #ff6b6b;
+            font-size: 0.7rem;
+        }
+
+        /* Чат */
+        .chat-modal {
+            display: none;
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 320px;
+            background: #1a1f35;
+            backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255,107,53,0.3);
+            z-index: 1000;
+            flex-direction: column;
+        }
+        body.light .chat-modal {
+            background: white;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            padding: 0.7rem;
+            border-radius: 1rem 1rem 0 0;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            color: white;
+        }
+        .chat-messages {
+            height: 250px;
+            overflow-y: auto;
+            padding: 0.7rem;
+            font-size: 0.8rem;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 0.7rem;
+            gap: 0.5rem;
+            border-top: 1px solid #334155;
+        }
+        .chat-input-area input {
+            margin: 0;
+        }
+        body.light .chat-input-area {
+            border-top: 1px solid #ccc;
+        }
+
+        .templates {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .template-btn {
+            background: #334155;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        body.light .template-btn {
+            background: #e2e8f0;
+            color: #1a1a2e;
+        }
+        .template-btn:hover {
+            background: #ff6b35;
+            color: white;
+        }
+
+        /* Модалка доната — в стиле сайта */
+        .donate-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .donate-modal-content {
+            background: rgba(20, 25, 45, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255,107,53,0.4);
+            animation: modalPop 0.3s ease;
+            box-shadow: 0 0 30px rgba(255,107,53,0.2);
+        }
+        body.light .donate-modal-content {
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(255,107,53,0.3);
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .donate-modal-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffb347, #ff6b35);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .donate-amounts {
+            display: flex;
+            gap: 0.7rem;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .donate-amount {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,107,53,0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        body.light .donate-amount {
+            background: rgba(0,0,0,0.05);
+        }
+        .donate-amount:hover {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.4);
+            color: white;
+        }
+        .donate-custom {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .donate-custom input {
+            flex: 1;
+            margin: 0;
+            background: rgba(10,15,30,0.8);
+            border: 1px solid #2a2f4a;
+            border-radius: 2rem;
+            padding: 0.7rem 1rem;
+            color: white;
+        }
+        body.light .donate-custom input {
+            background: white;
+            border: 1px solid #ccc;
+            color: #1a1a2e;
+        }
+        .donate-custom button {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 2rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .donate-custom button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.4);
+        }
+        .donate-button {
+            background: linear-gradient(135deg, #ff6b35, #f43f5e);
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 2rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(255,107,53,0.3);
+        }
+        .donate-button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+            box-shadow: 0 8px 20px rgba(255,107,53,0.4);
+        }
+        .close-modal {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: inherit;
+        }
+        body.light .close-modal {
+            background: rgba(0,0,0,0.05);
+            border-color: #ccc;
+        }
+        .close-modal:hover {
+            background: rgba(255,107,53,0.2);
+            border-color: #ff6b35;
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                padding: 1rem;
+            }
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            .form-card {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="skin-bg">
+    <div class="skin skin1">🔪</div>
+    <div class="skin skin2">🔫</div>
+    <div class="skin skin3">💣</div>
+    <div class="skin skin4">🎯</div>
+    <div class="skin skin5">⚡</div>
+    <div class="skin skin6">🔥</div>
+    <div class="skin skin7">💎</div>
+</div>
+<div class="animated-bg"></div>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🎮</div>
+            <div class="logo-text">CS2 <span>TeamFinder</span></div>
+        </div>
+        <div class="stats-panel">
+            <div class="stat-card">👥 <span id="onlineCounter">0</span></div>
+            <div class="stat-card">🔥 <span id="topRoles">--</span></div>
+            <button class="donate-btn" onclick="openDonateModal()">🎁 Поддержать</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('posts')">📢 Объявления</button>
+        <button class="tab-btn" onclick="switchTab('matches')">🎬 Матчи</button>
+        <button class="tab-btn" onclick="toggleChat()">💬 Чат</button>
+    </div>
+
+    <div id="postsTab" class="tab-content active">
+        <div class="two-columns">
+            <div class="form-card">
+                <div class="form-title">✨ Создать объявление</div>
+                <div class="templates">
+                    <button class="template-btn" onclick="applyTemplate('awp')">🎯 AWP</button>
+                    <button class="template-btn" onclick="applyTemplate('support')">🛡️ Support</button>
+                    <button class="template-btn" onclick="applyTemplate('igl')">👑 IGL</button>
+                    <button class="template-btn" onclick="applyTemplate('entry')">⚡ Entry</button>
+                </div>
+                <input type="text" id="nick" placeholder="Никнейм">
+                <input type="text" id="rank" placeholder="Ранг">
+                <input type="text" id="role" placeholder="Роль">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="hasMic"> <label>🎙️ Микрофон</label>
+                </div>
+                <select id="region">
+                    <option value="">Регион</option>
+                    <option>CIS</option><option>EU</option><option>NA</option><option>ASIA</option>
+                </select>
+                <select id="playTime">
+                    <option value="">Время игры</option>
+                    <option>Утро</option><option>День</option><option>Вечер</option><option>Ночь</option>
+                </select>
+                <select id="faceitLevel">
+                    <option value="0">FACEIT уровень</option>
+                    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                    <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                </select>
+                <input type="text" id="discord" placeholder="Discord">
+                <input type="text" id="twitch" placeholder="Twitch">
+                <input type="text" id="telegram" placeholder="Telegram">
+                <textarea id="desc" rows="2" placeholder="О себе..."></textarea>
+                <input type="text" id="steam" placeholder="Steam код">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="verifiedSteam"> <label>✅ Верифицирован</label>
+                </div>
+                <button class="btn-primary" onclick="addPost()">🚀 Опубликовать</button>
+            </div>
+
+            <div>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 Поиск..." onkeyup="filterPosts()">
+                    <select id="filterRank" onchange="filterPosts()">
+                        <option value="">Все ранги</option>
+                        <option>Silver</option><option>Gold Nova</option><option>Master Guardian</option>
+                        <option>Legendary Eagle</option><option>Supreme</option><option>Global Elite</option>
+                    </select>
+                    <select id="filterRegion" onchange="filterPosts()">
+                        <option value="">Все регионы</option>
+                        <option>CIS</option><option>EU</option><option>NA</option><option>ASIA</option>
+                    </select>
+                </div>
+                <div id="cardsContainer" class="cards-grid"><div class="empty-state">✨ Загрузка...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="matchesTab" class="tab-content">
+        <div id="adminPanel" class="admin-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                <span style="color:#ff6b35;">🔐 Админ-панель</span>
+                <button class="logout-admin-btn" onclick="adminLogout()">🚪 Выйти</button>
+            </div>
+            <div class="add-match-form">
+                <input type="text" id="matchTitle" placeholder="Название матча">
+                <input type="text" id="matchLink" placeholder="Ссылка">
+                <button class="btn-primary" onclick="addMatch()" style="width: auto;">➕ Добавить</button>
+            </div>
+        </div>
+        <div id="matchesContainer" class="matches-grid"></div>
+        <div id="loginToAdmin" style="text-align: center; margin-top: 1rem;">
+            <button class="theme-toggle" onclick="adminLogin()">🔑 Войти как админ</button>
+        </div>
+    </div>
+</div>
+
+<div id="donateModal" class="donate-modal">
+    <div class="donate-modal-content">
+        <h3>🎁 Поддержать проект</h3>
+        <p style="font-size:0.8rem; margin-bottom:1rem; color:#888;">Ваша поддержка помогает развитию</p>
+        <div class="donate-amounts">
+            <div class="donate-amount" onclick="donate(100)">100 ₽</div>
+            <div class="donate-amount" onclick="donate(300)">300 ₽</div>
+            <div class="donate-amount" onclick="donate(500)">500 ₽</div>
+            <div class="donate-amount" onclick="donate(1000)">1000 ₽</div>
+        </div>
+        <div class="donate-custom">
+            <input type="number" id="customAmount" placeholder="Своя сумма">
+            <button onclick="donateCustom()">Поддержать</button>
+        </div>
+        <button class="donate-button" onclick="donateWithDonationAlerts()">💳 Перейти к оплате</button>
+        <button class="close-modal" onclick="closeDonateModal()">Закрыть</button>
+    </div>
+</div>
+
+<div id="chatModal" class="chat-modal">
+    <div class="chat-header" onclick="toggleChat()"><span>💬 Чат</span><span>✖</span></div>
+    <div class="chat-messages" id="chatMessages"><div>💬 Добро пожаловать!</div></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Сообщение...">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+</div>
+
+<script>
+    let posts = JSON.parse(localStorage.getItem('cs2_posts') || '[]');
+    let chatMessages = JSON.parse(localStorage.getItem('cs2_chat') || '["💬 Добро пожаловать!"]');
+    let matches = JSON.parse(localStorage.getItem('cs2_matches') || '[]');
+    let isAdmin = localStorage.getItem('isAdmin') === 'true';
+    let deviceId = localStorage.getItem('deviceId');
+    if(!deviceId) {
+        deviceId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('deviceId', deviceId);
+    }
+
+    const ADMIN_SWORD = '545469123';
+    const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/screpochkaa'; // ЗАМЕНИТЕ
+
+    function openDonateModal() { document.getElementById('donateModal').style.display = 'flex'; }
+    function closeDonateModal() { document.getElementById('donateModal').style.display = 'none'; }
+    function donate(amount) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); }
+    function donateCustom() { let amount = document.getElementById('customAmount').value; if(amount && amount>0) { window.open(`${DONATION_ALERTS_URL}?amount=${amount}`, '_blank'); closeDonateModal(); } else alert('Введите сумму'); }
+    function donateWithDonationAlerts() { window.open(DONATION_ALERTS_URL, '_blank'); closeDonateModal(); }
+
+    function adminLogin() { let pwd = prompt('Пароль:'); if(pwd === ADMIN_PASSWORD) { localStorage.setItem('isAdmin', 'true'); isAdmin = true; alert('✅ Вы вошли как админ'); renderMatches(); } else alert('❌ Неверный пароль'); }
+    function adminLogout() { localStorage.setItem('isAdmin', 'false'); isAdmin = false; alert('🚪 Вы вышли из админки'); renderMatches(); }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        if(tab === 'posts') { document.querySelector('.tab-btn:first-child').classList.add('active'); document.getElementById('postsTab').classList.add('active'); }
+        else if(tab === 'matches') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('matchesTab').classList.add('active'); renderMatches(); }
+    }
+
+    function addMatch() { if(!isAdmin) { alert('⛔ Только админ'); return; } let title = document.getElementById('matchTitle').value.trim(); let link = document.getElementById('matchLink').value.trim(); if(!title || !link) { alert('Заполните поля'); return; } matches.unshift({ id: Date.now(), title, link, date: new Date().toLocaleString() }); localStorage.setItem('cs2_matches', JSON.stringify(matches)); renderMatches(); document.getElementById('matchTitle').value = ''; document.getElementById('matchLink').value = ''; }
+    function deleteMatch(id) { if(!isAdmin) { alert('⛔ Только админ'); return; } if(confirm('Удалить матч?')) { matches = matches.filter(m => m.id !== id); localStorage.setItem('cs2_matches', JSON.stringify(matches)); renderMatches(); } }
+
+    function renderMatches() {
+        let container = document.getElementById('matchesContainer');
+        let adminPanel = document.getElementById('adminPanel');
+        let loginBtn = document.getElementById('loginToAdmin');
+        if(isAdmin) { if(adminPanel) adminPanel.style.display = 'block'; if(loginBtn) loginBtn.style.display = 'none'; }
+        else { if(adminPanel) adminPanel.style.display = 'none'; if(loginBtn) loginBtn.style.display = 'block'; }
+        if(matches.length === 0) { container.innerHTML = '<div class="empty-state">🎬 Нет матчей</div>'; return; }
+        let html = '';
+        for(let m of matches) {
+            let platform = '';
+            if(m.link.includes('twitch.tv')) platform = '📺 Twitch';
+            else if(m.link.includes('youtube.com') || m.link.includes('youtu.be')) platform = '🎥 YouTube';
+            else if(m.link.includes('faceit.com')) platform = '🎮 FACEIT';
+            html += `<div class="match-card"><div class="match-title">🎬 ${escapeHtml(m.title)}</div><div style="font-size:0.65rem; color:#66c0f4;">${platform}</div><a href="${m.link}" target="_blank" class="match-link">▶ Смотреть</a>${isAdmin ? `<button class="btn-delete" onclick="deleteMatch(${m.id})" style="margin-left:0.5rem;">🗑</button>` : ''}<div class="date-small">📅 ${m.date}</div></div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function updateStats() {
+        document.getElementById('onlineCounter').innerHTML = posts.length;
+        let roles = {};
+        posts.forEach(p => { roles[p.role] = (roles[p.role] || 0) + 1; });
+        let top = Object.entries(roles).sort((a,b) => b[1] - a[1]).slice(0,2);
+        document.getElementById('topRoles').innerHTML = top.map(r => `${r[0]}(${r[1]})`).join(' ') || 'нет';
+    }
+
+    function likePost(id) {
+        let post = posts.find(p => p.id == id);
+        if(!post) return;
+        if(!post.likedBy) post.likedBy = [];
+        if(post.likedBy.includes(deviceId)) { alert('❤️ Вы уже лайкнули'); return; }
+        post.likedBy.push(deviceId);
+        post.likes = (post.likes || 0) + 1;
+        saveAndRender();
+    }
+
+    function ratePost(id, rating) {
+        let post = posts.find(p => p.id == id);
+        if(post) {
+            if(!post.ratedBy) post.ratedBy = [];
+            if(post.ratedBy.includes(deviceId)) { alert('⭐ Вы уже оценили'); return; }
+            post.ratedBy.push(deviceId);
+            post.ratingCount = (post.ratingCount || 0) + 1;
+            post.ratingSum = (post.ratingSum || 0) + rating;
+            post.avgRating = post.ratingSum / post.ratingCount;
+            saveAndRender();
+        }
+    }
+
+    function getStarsHtml(id, avgRating) {
+        let html = '<div class="stars">';
+        for(let i=1;i<=5;i++) html += `<span class="star ${avgRating>=i?'active':''}" onclick="ratePost(${id},${i})">★</span>`;
+        html += `<span style="margin-left:0.3rem; font-size:0.7rem;">(${avgRating?avgRating.toFixed(1):'0'})</span></div>`;
+        return html;
+    }
+
+    function applyTemplate(type) {
+        let t = { awp: { role: 'AWP', desc: 'Играю на AWP, есть микрофон.' }, support: { role: 'Support', desc: 'Поддержка, знаю смоки.' }, igl: { role: 'IGL', desc: 'Капитан, тактика.' }, entry: { role: 'Entry', desc: 'Захожу первым.' } }[type];
+        if(t) { document.getElementById('role').value = t.role; document.getElementById('desc').value = t.desc; }
+    }
+
+    function showQR(steamId) { alert(`🎮 Код: ${steamId}\nsteam://friends/add/${steamId}`); }
+    function saveAndRender() { localStorage.setItem('cs2_posts', JSON.stringify(posts)); renderCards(); updateStats(); }
+
+    function addPost() {
+        let nick = document.getElementById('nick').value.trim(), rank = document.getElementById('rank').value.trim(), role = document.getElementById('role').value.trim(), hasMic = document.getElementById('hasMic').checked, region = document.getElementById('region').value, playTime = document.getElementById('playTime').value, faceit = document.getElementById('faceitLevel').value, discord = document.getElementById('discord').value.trim(), twitch = document.getElementById('twitch').value.trim(), telegram = document.getElementById('telegram').value.trim(), desc = document.getElementById('desc').value.trim(), steam = document.getElementById('steam').value.trim(), verified = document.getElementById('verifiedSteam').checked;
+        if(!nick || !rank || !role || !desc || !steam) { alert('Заполните все поля'); return; }
+        posts.unshift({ id: Date.now(), nick, rank, role, hasMic, region, playTime, faceit, discord, twitch, telegram, desc, steam, verified, likes:0, likedBy:[], ratingCount:0, ratingSum:0, avgRating:0, ratedBy:[], date: new Date().toLocaleString() });
+        saveAndRender();
+        document.getElementById('nick').value=''; document.getElementById('rank').value=''; document.getElementById('role').value=''; document.getElementById('hasMic').checked=false; document.getElementById('region').value=''; document.getElementById('playTime').value=''; document.getElementById('faceitLevel').value='0'; document.getElementById('discord').value=''; document.getElementById('twitch').value=''; document.getElementById('telegram').value=''; document.getElementById('desc').value=''; document.getElementById('steam').value=''; document.getElementById('verifiedSteam').checked=false;
+    }
+
+    function deletePost(id) { if(confirm('Удалить?')) { posts = posts.filter(p=>p.id!==id); saveAndRender(); } }
+    function addToSteam(steamId) { window.open('steam://friends/add/'+steamId, '_blank'); alert('Код: '+steamId); }
+
+    function filterPosts() {
+        let search = document.getElementById('searchInput').value.toLowerCase(), rankFilter = document.getElementById('filterRank').value, regionFilter = document.getElementById('filterRegion').value;
+        let filtered = posts.filter(p => p.nick.toLowerCase().includes(search) && (rankFilter === '' || p.rank === rankFilter) && (regionFilter === '' || p.region === regionFilter));
+        renderCards(filtered);
+    }
+
+    function renderCards(filteredList = null) {
+        let container = document.getElementById('cardsContainer'), list = filteredList !== null ? filteredList : posts;
+        if(list.length === 0) { container.innerHTML = '<div class="empty-state">😢 Нет объявлений</div>'; return; }
+        let html = '';
+        for(let p of list) {
+            let hasLiked = p.likedBy && p.likedBy.includes(deviceId);
+            html += `<div class="player-card"><div class="card-header"><div class="player-name">🎮 ${escapeHtml(p.nick)}${p.verified ? ' ✅' : ''}</div><div class="likes"><button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="likePost(${p.id})">❤️</button><span>${p.likes || 0}</span></div></div>${getStarsHtml(p.id, p.avgRating || 0)}<div><span class="badge rank-badge">🏆 ${escapeHtml(p.rank)}</span><span class="badge role-badge">⚔️ ${escapeHtml(p.role)}</span>${p.hasMic ? '<span class="badge mic-badge">🎙️ Микрофон</span>' : ''}${p.region ? `<span class="badge region-badge">🌍 ${escapeHtml(p.region)}</span>` : ''}${p.playTime ? `<span class="badge time-badge">🕐 ${escapeHtml(p.playTime)}</span>` : ''}${p.faceit && p.faceit > 0 ? `<span class="badge faceit-level">🎯 FACEIT lvl ${p.faceit}</span>` : ''}</div><div class="desc-text">📌 ${escapeHtml(p.desc)}</div><div class="social-links">${p.discord ? `<a href="https://discord.gg/${p.discord}" target="_blank" class="social-link discord-link">Discord</a>` : ''}${p.twitch ? `<a href="https://twitch.tv/${p.twitch}" target="_blank" class="social-link twitch-link">Twitch</a>` : ''}${p.telegram ? `<a href="https://t.me/${p.telegram}" target="_blank" class="social-link telegram-link">Telegram</a>` : ''}</div><div class="steam-code">Steam: ${escapeHtml(p.steam)}</div><div class="qr-code" onclick="showQR('${p.steam}')">📱 QR-код</div><div class="action-buttons"><button class="btn-steam" onclick="addToSteam('${p.steam}')">➕ Добавить в Steam</button><button class="chat-btn" onclick="openChatWithUser('${p.nick}')">💬 Написать</button><button class="btn-delete" onclick="deletePost(${p.id})">🗑 Удалить</button></div><div class="date-small">📅 ${p.date}</div></div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleChat() { let modal = document.getElementById('chatModal'); modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
+    function sendMessage() { let input = document.getElementById('chatInput'), msg = input.value.trim(); if(msg) { chatMessages.push(`🧑 ${escapeHtml(msg)}`); localStorage.setItem('cs2_chat', JSON.stringify(chatMessages)); renderChat(); input.value = ''; } }
+    function renderChat() { let container = document.getElementById('chatMessages'); container.innerHTML = chatMessages.map(m => `<div>${m}</div>`).join(''); container.scrollTop = container.scrollHeight; }
+    function openChatWithUser(nick) { toggleChat(); document.getElementById('chatInput').value = `@${nick} `; document.getElementById('chatInput').focus(); }
+
+    function toggleTheme() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+    function loadTheme() { if(localStorage.getItem('theme') === 'light') document.body.classList.add('light'); }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+
+    renderCards(); renderChat(); loadTheme(); updateStats(); renderMatches();
+    window.ratePost=ratePost; window.likePost=likePost; window.deletePost=deletePost; window.addToSteam=addToSteam; window.filterPosts=filterPosts; window.toggleTheme=toggleTheme; window.toggleChat=toggleChat; window.sendMessage=sendMessage; window.openChatWithUser=openChatWithUser; window.addPost=addPost; window.applyTemplate=applyTemplate; window.showQR=showQR; window.switchTab=switchTab; window.addMatch=addMatch; window.deleteMatch=deleteMatch; window.adminLogin=adminLogin; window.adminLogout=adminLogout; window.openDonateModal=openDonateModal; window.closeDonateModal=closeDonateModal; window.donate=donate; window.donateCustom=donateCustom; window.donateWithDonationAlerts=donateWithDonationAlerts;
+</script>
+</body>
+</html>
