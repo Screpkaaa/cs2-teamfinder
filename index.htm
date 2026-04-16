@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CS2 TeamFinder</title>
+    <title>CS2 TeamFinder — с никами и админкой</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script type="importmap">
         {
@@ -15,7 +15,7 @@
         }
     </script>
     <style>
-        /* ========== ПОЛНЫЙ CSS (дизайн, скины, анимации) ========== */
+        /* ========== ТЕ ЖЕ СТИЛИ (полный CSS из предыдущей версии) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -710,6 +710,7 @@
     <div id="authContainer" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
         <div class="form-card" style="max-width: 400px; width:100%;">
             <h2 style="text-align:center; margin-bottom:1rem;">Вход / Регистрация</h2>
+            <input type="text" id="regNick" placeholder="Ваш никнейм (будет отображаться)">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Пароль">
             <button class="btn-primary" id="registerBtn">Зарегистрироваться</button>
@@ -821,7 +822,6 @@
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
     import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, arrayUnion, getDoc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 
-    // ========== ТВОЙ КОНФИГ FIREBASE (вставлен) ==========
     const firebaseConfig = {
         apiKey: "AIzaSyB0NNx_xuSTWwvtC7ArR7cpLjagV3E8kxc",
         authDomain: "cs2-teamfinder.firebaseapp.com",
@@ -829,7 +829,6 @@
         storageBucket: "cs2-teamfinder.firebasestorage.app",
         messagingSenderId: "339871719223",
         appId: "1:339871719223:web:74a5b9b2974aa021b5c4b2"
-        // measurementId не нужен, убрали
     };
 
     const app = initializeApp(firebaseConfig);
@@ -837,14 +836,15 @@
     const db = getFirestore(app);
 
     let currentUser = null;
+    let currentUserNick = null;
     let isAdmin = false;
-    let postsUnsubscribe = null;
+    let postsUnsubscribe = null; 
     let chatUnsubscribe = null;
     let matchesUnsubscribe = null;
 
-    // Константы (замени ссылки на свои)
-    const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/screpochkaa';
-    const TELEGRAM_ADMIN_LINK = 'https://t.me/TeamFinderCS2';
+    // Константы
+    const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/screpochkaa'; // замени
+    const TELEGRAM_ADMIN_LINK = 'https://t.me/TeamFinderCS2'; // замени
 
     // DOM элементы
     const authContainer = document.getElementById('authContainer');
@@ -879,24 +879,48 @@
         return html;
     }
 
+    // Функция для получения ника пользователя по uid (с кэшированием)
+    const nickCache = new Map();
+    async function getUserNick(uid) {
+        if (nickCache.has(uid)) return nickCache.get(uid);
+        try {
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            if (userDoc.exists()) {
+                const nick = userDoc.data().nick || userDoc.data().email || 'Аноним';
+                nickCache.set(uid, nick);
+                return nick;
+            }
+        } catch(e) { console.warn(e); }
+        return 'Аноним';
+    }
+
     async function loadPostsRealtime() {
         if (postsUnsubscribe) postsUnsubscribe();
         const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-        postsUnsubscribe = onSnapshot(q, (snapshot) => {
+        postsUnsubscribe = onSnapshot(q, async (snapshot) => {
             const posts = [];
-            snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
-            renderPosts(posts);
+            for (const docSnap of snapshot.docs) {
+                const data = docSnap.data();
+                // Добавляем ник автора (асинхронно, но для простоты рендерим без, потом обновим)
+                posts.push({ id: docSnap.id, ...data });
+            }
+            await renderPosts(posts);
             updateStats(posts);
         });
     }
 
-    function renderPosts(posts) {
+    async function renderPosts(posts) {
         if (!posts.length) {
             cardsContainer.innerHTML = '<div class="empty-state">😢 Нет объявлений</div>';
             return;
         }
+        // Для каждого поста получим ник автора
+        const postsWithNick = await Promise.all(posts.map(async (p) => {
+            const nick = await getUserNick(p.authorId);
+            return { ...p, authorNick: nick };
+        }));
         let html = '';
-        for (let p of posts) {
+        for (let p of postsWithNick) {
             const hasLiked = p.likedBy && p.likedBy.includes(currentUser?.uid);
             const avg = p.avgRating || 0;
             html += `<div class="player-card">
@@ -907,6 +931,7 @@
                                 <span>${p.likes || 0}</span>
                             </div>
                         </div>
+                        <div style="font-size:0.7rem; color:#aaa;">Автор: ${escapeHtml(p.authorNick)}</div>
                         ${getStarsHtml(p.id, avg)}
                         <div>
                             <span class="badge rank-badge">🏆 ${escapeHtml(p.rank)}</span>
@@ -926,7 +951,7 @@
                         <div class="qr-code" data-steam="${p.steam}">📱 QR-код</div>
                         <div class="action-buttons">
                             <button class="btn-steam" data-steam="${p.steam}">➕ Добавить в Steam</button>
-                            <button class="chat-btn" data-nick="${p.nick}">💬 Написать</button>
+                            <button class="chat-btn" data-nick="${p.authorNick}">💬 Написать</button>
                             ${isAdmin ? `<button class="btn-delete delete-post" data-id="${p.id}">🗑 Удалить (админ)</button>` : ''}
                         </div>
                         <div class="date-small">📅 ${p.createdAt?.toDate ? p.createdAt.toDate().toLocaleString() : new Date(p.createdAt?.seconds * 1000).toLocaleString()}</div>
@@ -1028,7 +1053,7 @@
         if (!nick || !rank || !role || !desc || !steam) return alert('Заполните обязательные поля');
         await addDoc(collection(db, 'posts'), {
             nick, rank, role, hasMic, region, playTime, faceit, discord, twitch, telegram, desc, steam, verified,
-            authorId: currentUser.uid, authorEmail: currentUser.email,
+            authorId: currentUser.uid,
             likes: 0, likedBy: [], ratingCount: 0, ratingSum: 0, avgRating: 0, ratedBy: [],
             createdAt: serverTimestamp()
         });
@@ -1050,9 +1075,13 @@
     async function loadChatRealtime() {
         if (chatUnsubscribe) chatUnsubscribe();
         const q = query(collection(db, 'messages'), orderBy('createdAt', 'asc'));
-        chatUnsubscribe = onSnapshot(q, (snapshot) => {
+        chatUnsubscribe = onSnapshot(q, async (snapshot) => {
             const messages = [];
-            snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+            for (const docSnap of snapshot.docs) {
+                const data = docSnap.data();
+                const authorNick = await getUserNick(data.authorId);
+                messages.push({ id: docSnap.id, ...data, authorNick });
+            }
             renderChatMessages(messages);
         });
     }
@@ -1061,7 +1090,7 @@
         let html = '';
         for (let msg of messages) {
             html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
-                        <span><b>${escapeHtml(msg.authorEmail)}</b>: ${escapeHtml(msg.text)}</span>
+                        <span><b>${escapeHtml(msg.authorNick)}</b>: ${escapeHtml(msg.text)}</span>
                         ${isAdmin ? `<button class="delete-msg" data-id="${msg.id}" style="background:none; border:none; color:#ff6b6b; cursor:pointer;">🗑</button>` : ''}
                     </div>`;
         }
@@ -1086,7 +1115,7 @@
         const input = document.getElementById('chatInput');
         const text = input.value.trim();
         if (!text) return;
-        await addDoc(collection(db, 'messages'), { text, authorId: currentUser.uid, authorEmail: currentUser.email, createdAt: serverTimestamp() });
+        await addDoc(collection(db, 'messages'), { text, authorId: currentUser.uid, createdAt: serverTimestamp() });
         input.value = '';
     });
 
@@ -1151,17 +1180,24 @@
         document.getElementById('matchLink').value = '';
     });
 
-    // Аутентификация
+    // Регистрация с ником
     document.getElementById('registerBtn')?.addEventListener('click', async () => {
-        const email = document.getElementById('regEmail').value;
+        const nick = document.getElementById('regNick').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
-        if (!email || !password) return alert('Заполните поля');
+        if (!nick || !email || !password) return alert('Заполните все поля');
         try {
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, 'users', userCred.user.uid), { email, isAdmin: false, createdAt: serverTimestamp() });
+            await setDoc(doc(db, 'users', userCred.user.uid), {
+                email: email,
+                nick: nick,
+                isAdmin: false,
+                createdAt: serverTimestamp()
+            });
             alert('Регистрация успешна!');
         } catch (err) { alert(err.message); }
     });
+
     document.getElementById('loginBtn')?.addEventListener('click', async () => {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
@@ -1176,10 +1212,12 @@
         currentUser = user;
         if (user) {
             const userDoc = await getDoc(doc(db, 'users', user.uid));
-            isAdmin = userDoc.exists() && userDoc.data().isAdmin === true;
+            const userData = userDoc.data();
+            isAdmin = userData?.isAdmin === true;
+            currentUserNick = userData?.nick || user.email;
             authContainer.style.display = 'none';
             mainContent.style.display = 'block';
-            userInfo.innerHTML = `<span style="margin-right:0.8rem;">👋 ${user.email}</span>
+            userInfo.innerHTML = `<span style="margin-right:0.8rem;">👋 ${escapeHtml(currentUserNick)}</span>
                                   <button class="header-btn outline" id="logoutBtn">Выйти</button>`;
             document.getElementById('logoutBtn')?.addEventListener('click', () => signOut(auth));
             adminPanel.style.display = isAdmin ? 'block' : 'none';
@@ -1210,10 +1248,8 @@
     document.getElementById('closeDonateModalBtn')?.addEventListener('click', () => window.closeDonateModal());
     document.getElementById('donateBtn')?.addEventListener('click', () => window.openDonateModal());
 
-    // Связь с админом
     document.getElementById('writeToAdminBtn')?.addEventListener('click', () => window.open(TELEGRAM_ADMIN_LINK, '_blank'));
 
-    // Тема
     const themeToggle = document.getElementById('themeToggle');
     themeToggle?.addEventListener('click', () => {
         document.body.classList.toggle('light');
@@ -1221,7 +1257,6 @@
     });
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
 
-    // Вкладки
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const tab = btn.dataset.tab;
@@ -1241,7 +1276,6 @@
     document.getElementById('closeChatBtn')?.addEventListener('click', () => document.getElementById('chatModal').style.display = 'none');
     window.openChatWithUser = openChatWithUser;
 
-    // Шаблоны
     document.querySelectorAll('.template-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const type = btn.dataset.template;
@@ -1254,7 +1288,6 @@
         });
     });
 
-    // Поиск и фильтры
     function filterPosts() {
         const search = document.getElementById('searchInput').value.toLowerCase();
         const rankFilter = document.getElementById('filterRank').value;
